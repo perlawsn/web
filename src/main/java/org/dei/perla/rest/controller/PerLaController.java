@@ -6,8 +6,6 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
-import java.util.concurrent.locks.ReadWriteLock;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.log4j.Logger;
 import org.dei.perla.channel.ChannelFactory;
@@ -34,9 +32,7 @@ public class PerLaController {
 	private DeviceDescriptorParser parser;
 	private FpcFactory factory;
 
-	private ReadWriteLock lock = new ReentrantReadWriteLock();
 	private Registry registry;
-	private Collection<Fpc> fpcs;
 
 	public PerLaController(List<String> packages, List<String> mapperFcts,
 			List<String> channelFcts, List<String> requestBuilderFcts)
@@ -79,13 +75,7 @@ public class PerLaController {
 			}
 
 			factory = new BaseFpcFactory(mfList, cfList, rbfList);
-			try {
-				lock.writeLock().lock();
-				registry = new TreeRegistry();
-				fpcs = new ArrayList<>();
-			} finally {
-				lock.writeLock().unlock();
-			}
+			registry = new TreeRegistry();
 			logger.info("PerLaController initialized successfully");
 
 		} catch (Exception e) {
@@ -101,7 +91,6 @@ public class PerLaController {
 			DeviceDescriptor d = parser.parse(descriptor);
 			fpc = factory.createFpc(d, id);
 			registry.add(fpc);
-			fpcs.add(fpc);
 		} catch (DeviceDescriptorParseException e) {
 			logger.error("Error parsing device descriptor", e);
 		} catch (InvalidDeviceDescriptorException e) {
@@ -111,23 +100,17 @@ public class PerLaController {
 		logger.info("FPC '" + id + "' created and added to the register");
 		return fpc;
 	}
-
-	public Collection<Fpc> getAllFpcs() {
-		try {
-			lock.readLock().lock();
-			return fpcs;
-		} finally {
-			lock.readLock().unlock();
-		}
+	
+	public Fpc getFpc(int id) {
+		return registry.get(id);
 	}
 
-	public Collection<Fpc> getFpc(Collection<Attribute> with) {
-		try {
-			lock.readLock().lock();
-			return registry.getFpc(with, Collections.emptyList());
-		} finally {
-			lock.readLock().unlock();
-		}
+	public Collection<Fpc> getAllFpcs() {
+		return registry.getAll();
+	}
+
+	public Collection<Fpc> getFpcByAttribute(Collection<Attribute> with) {
+		return registry.getByAttribute(with, Collections.emptyList());
 	}
 
 }

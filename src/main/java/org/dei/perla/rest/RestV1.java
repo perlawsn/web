@@ -10,12 +10,14 @@ import java.util.Map;
 import javax.annotation.Resource;
 
 import org.dei.perla.fpc.Attribute;
+import org.dei.perla.fpc.Fpc;
 import org.dei.perla.fpc.descriptor.DataType;
 import org.dei.perla.rest.controller.PerLaController;
 import org.dei.perla.rest.controller.PerLaException;
 import org.dei.perla.rest.response.Error;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -28,6 +30,11 @@ public class RestV1 {
 
 	@Resource
 	private PerLaController ctrl;
+	
+	@RequestMapping(value = "/fpc", method = RequestMethod.GET)
+	public ResponseEntity<Object> startQuery(final WebRequest req) {
+		return null;
+	}
 
 	@RequestMapping(value = "/fpc", method = RequestMethod.PUT, headers = "content-type=text/xml,application/xml")
 	public ResponseEntity<Object> createFPC(@RequestBody byte[] descriptor) {
@@ -40,7 +47,7 @@ public class RestV1 {
 	}
 
 	@RequestMapping(value = "/fpc", method = RequestMethod.GET)
-	public ResponseEntity<Object> getFPC(final WebRequest req) {
+	public ResponseEntity<Object> listFPC(final WebRequest req) {
 		Map<String, String[]> params = req.getParameterMap();
 
 		if (params.size() == 0) {
@@ -53,7 +60,17 @@ public class RestV1 {
 		} catch (PerLaException e) {
 			return new ResponseEntity<>(new Error(e), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<>(ctrl.getFpc(atts), HttpStatus.OK);
+		return new ResponseEntity<>(ctrl.getFpcByAttribute(atts), HttpStatus.OK);
+	}
+	
+	@RequestMapping(value = "/fpc/{id}", method = RequestMethod.GET)
+	public ResponseEntity<Object> getFPC(@PathVariable("id") Integer id) {
+		Fpc fpc = ctrl.getFpc(id);
+		if (fpc == null) {
+			return new ResponseEntity<>(new Error("not found"),
+					HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(fpc, HttpStatus.OK);
 	}
 
 	public Collection<Attribute> parseAttributes(Map<String, String[]> query)
