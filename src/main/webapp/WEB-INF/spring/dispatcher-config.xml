@@ -27,18 +27,22 @@
     <value>org.dei.perla.fpc.descriptor.instructions</value>
     <value>org.dei.perla.channel.http</value>
     <value>org.dei.perla.message.json</value>
+    <value>org.dei.perla.channel.simulator</value>
   </util:list>
   
   <util:list id="mapperFcts">
   	<value>org.dei.perla.message.json.JsonMapperFactory</value>
+  	<value>org.dei.perla.channel.simulator.SimulatorMapperFactory</value>
   </util:list>
   
   <util:list id="channelFcts">
   	<value>org.dei.perla.channel.http.HttpChannelFactory</value>
+  	<value>org.dei.perla.channel.simulator.SimulatorChannelFactory</value>
   </util:list>
   
   <util:list id="requestBuilderFcts">
   	<value>org.dei.perla.channel.http.HttpIORequestBuilderFactory</value>
+  	<value>org.dei.perla.channel.simulator.SimulatorIORequestBuilderFactory</value>
   </util:list>
   
   <bean class="org.dei.perla.rest.controller.PerLaController" scope="singleton">

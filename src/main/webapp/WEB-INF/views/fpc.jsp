@@ -16,7 +16,7 @@ $(document).on('pageinit', function() {
 			display(fpcs);
 		},
 		error: function(request, error) {
-			alert('Error while retrieving FPC data: ' + error);
+			alert('Error while retrieving FPC list');
 		}
 	});
 	
@@ -38,7 +38,7 @@ $(document).on('pageinit', function() {
         			location.reload();
         		},
         		error: function(request, error) {
-        			alert('Error: ' + error.message);
+        			alert('Error');
         		}
         	});
         	
