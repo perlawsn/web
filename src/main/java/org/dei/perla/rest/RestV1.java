@@ -31,9 +31,29 @@ public class RestV1 {
 	@Resource
 	private PerLaController ctrl;
 	
-	@RequestMapping(value = "/fpc", method = RequestMethod.GET)
+	@RequestMapping(value = "/query", method = RequestMethod.GET)
 	public ResponseEntity<Object> startQuery(final WebRequest req) {
-		return null;
+		Map<String, String[]> params = req.getParameterMap();
+		
+		if (params.size() == 0) {
+			return new ResponseEntity<>(new Error("missing query attributes"), HttpStatus.BAD_REQUEST);
+		}
+		
+		Collection<Attribute> atts = null;
+		try {
+			 atts = parseAttributes(params);
+		} catch (PerLaException e) {
+			return new ResponseEntity<>(new Error(e), HttpStatus.BAD_REQUEST);
+		}
+		
+		int id = 0;
+		try {
+			id = ctrl.queryPeriodic(atts, 1000);
+		} catch (PerLaException e) {
+			return new ResponseEntity<>(new Error(e), HttpStatus.BAD_REQUEST);
+		}
+		
+		return new ResponseEntity<>(id, HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/fpc", method = RequestMethod.PUT, headers = "content-type=text/xml,application/xml")
