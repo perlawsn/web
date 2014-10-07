@@ -5,6 +5,10 @@
 	width: 500px;
 }
 
+.main-header {
+	width: 800px;
+}
+
 .ui-listview>li p.wrap {
 	white-space: normal;
 }

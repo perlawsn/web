@@ -1,18 +1,10 @@
-<%@ page language="java" contentType="text/html; charset=ISO-8859-1" pageEncoding="ISO-8859-1"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
 <head>
 <meta charset="UTF-8">
-<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css"/>
-<link rel="stylesheet" href="/perla-web/console/style.css"/>
-<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
-<script type="text/javascript">
-$(document).bind("mobileinit", function () {
-    $.mobile.ajaxEnabled = false;
-});
-</script>
-<script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
-<script src="/perla-web/console/stomp.js"></script>
+<%@include file="include/common_script.jsp" %>
+<script src="/perla-web/console/static/stomp.js"></script>
 <script type="text/javascript">
 var client;
 $(document).on('pageinit', function() {
@@ -39,6 +31,7 @@ function error_cback(error) {
 <div data-role="page">
 
 	<div data-role="header">
+		<a href="/perla-web/console/query/" class="ui-btn-left ui-btn ui-btn-inline ui-mini ui-corner-all ui-btn-icon-left ui-icon-carat-l">Back</a>
 		<h1>PerLa Web Console</h1>
 	</div>
 
