@@ -7,16 +7,32 @@
 <script type="text/javascript">
 $(document).on('pageinit', function() {
 	
+	$('#add-query').click(function() {
+		console.log('/perla-web/rest/v1/query?' + $('#query').val());
+		
+		$.ajax({
+			url: '/perla-web/rest/v1/query?' + $('#query').val(),
+			dataType: 'json',
+			async: true,
+			success: function(result) {
+				location.reload();
+			},
+			error: function(request, error) {
+				alert('Error while starting new query')
+			}
+		});
+	});
+	
 	// Load FPC list
 	$.ajax({
-		url: '/perla-web/rest/v1/task',
+		url: '/perla-web/rest/v1/query/running',
 		dataType: 'json',
 		async: true,
 		success: function(queries) {
 			display(queries);
 		},
 		error: function(request, error) {
-			alert('Error while retrieving FPC data: ' + error);
+			alert('Error while retrieving queries');
 		}
 	});
 });
@@ -65,15 +81,15 @@ function display(queries) {
 
 function stopQuery(id) {
 	$.ajax({
-		url: '/perla-web/rest/v1/task/' + id,
+		url: '/perla-web/rest/v1/query/running/' + id,
 		dataType: 'json',
 		type: 'delete',
 		async: true,
-		success: function(queries) {
+		success: function(result) {
 			location.reload();
 		},
 		error: function(request, error) {
-			alert('Error while stopping query: ' + error);
+			alert('Error while stopping query');
 		}
 	});
 }
@@ -92,6 +108,15 @@ function stopQuery(id) {
 		<h2>
 		Query Management
 		</h2>
+		
+		<fieldset class="ui-grid-a">
+			<div class="ui-block-a" style="width:75%">
+				<input type="text" name="query" id="query" value="temp_k=float&period=1000">
+			</div>
+			<div class="ui-block-b" style="width: 25%">
+				<a id="add-query" class="ui-shadow ui-btn ui-corner-all ui-btn-inline ui-btn-icon-left ui-icon-plus">Add</a>
+			</div>
+		</fieldset>
 		
 		<ul data-role="listview" data-split-icon="delete" data-inset="true" id="query-list">
 

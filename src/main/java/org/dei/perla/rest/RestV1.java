@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -33,12 +34,27 @@ public class RestV1 {
 
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
 	public ResponseEntity<Object> startQuery(final WebRequest req) {
-		Map<String, String[]> params = req.getParameterMap();
+		Map<String, String[]> params = new HashMap<>(req.getParameterMap());
 
 		if (params.size() == 0) {
 			return new ResponseEntity<>(new Result("error",
 					"missing query attributes"), HttpStatus.BAD_REQUEST);
 		}
+
+		if (!params.containsKey("period") || params.get("period").length == 0) {
+			return new ResponseEntity<>(new Result("error", "missing period"),
+					HttpStatus.BAD_REQUEST);
+		}
+
+		long period = 0;
+		try {
+			period = Long.parseLong(params.get("period")[0]);
+		} catch (NumberFormatException e) {
+			return new ResponseEntity<>(new Result("error",
+					"wrong period value: " + e.getMessage()),
+					HttpStatus.BAD_REQUEST);
+		}
+		params.remove("period");
 
 		Collection<Attribute> atts = null;
 		try {
@@ -49,7 +65,7 @@ public class RestV1 {
 
 		int id = 0;
 		try {
-			id = ctrl.queryPeriodic(atts, 1000);
+			id = ctrl.queryPeriodic(atts, period);
 		} catch (PerLaException e) {
 			return new ResponseEntity<>(new Result(e), HttpStatus.BAD_REQUEST);
 		}
@@ -57,14 +73,14 @@ public class RestV1 {
 		return new ResponseEntity<>(id, HttpStatus.ACCEPTED);
 	}
 
-	@RequestMapping(value = "/task", method = RequestMethod.GET)
-	public ResponseEntity<Object> getAllTasks() {
+	@RequestMapping(value = "/query/running", method = RequestMethod.GET)
+	public ResponseEntity<Object> getAllRunningQueries() {
 		Collection<RestTask> tasks = ctrl.getAllTasks();
 		return new ResponseEntity<>(tasks, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/task/{id}", method = RequestMethod.GET)
-	public ResponseEntity<Object> getTask(@PathVariable("id") Integer id) {
+	@RequestMapping(value = "/query/running/{id}", method = RequestMethod.GET)
+	public ResponseEntity<Object> getRunningQuery(@PathVariable("id") Integer id) {
 		RestTask t = ctrl.getTask(id);
 		if (t == null) {
 			return new ResponseEntity<>(new Result("error", "not found"),
@@ -73,14 +89,15 @@ public class RestV1 {
 		return new ResponseEntity<>(t, HttpStatus.OK);
 	}
 
-	@RequestMapping(value = "/task/{id}", method = RequestMethod.DELETE)
-	public ResponseEntity<Object> stopTask(@PathVariable("id") Integer id) {
+	@RequestMapping(value = "/query/running/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Object> stopRunningQuery(
+			@PathVariable("id") Integer id) {
 		RestTask t = ctrl.getTask(id);
 		if (t == null) {
 			return new ResponseEntity<>(new Result("error", "not found"),
 					HttpStatus.NOT_FOUND);
 		}
-		
+
 		ctrl.stopTask(id);
 		return new ResponseEntity<>(new Result("ok", "stopping task '" + id
 				+ "'"), HttpStatus.ACCEPTED);
