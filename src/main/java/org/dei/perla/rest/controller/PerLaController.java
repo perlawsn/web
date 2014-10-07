@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import org.apache.log4j.Logger;
@@ -13,6 +15,7 @@ import org.dei.perla.channel.IORequestBuilderFactory;
 import org.dei.perla.fpc.Attribute;
 import org.dei.perla.fpc.Fpc;
 import org.dei.perla.fpc.FpcFactory;
+import org.dei.perla.fpc.Task;
 import org.dei.perla.fpc.TaskHandler;
 import org.dei.perla.fpc.base.BaseFpcFactory;
 import org.dei.perla.fpc.descriptor.DeviceDescriptor;
@@ -29,7 +32,7 @@ import org.springframework.messaging.core.MessageSendingOperations;
 public class PerLaController {
 
 	private Logger logger = Logger.getLogger(PerLaController.class);
-	
+
 	@Autowired
 	private MessageSendingOperations<String> msg;
 
@@ -38,7 +41,9 @@ public class PerLaController {
 
 	private DeviceDescriptorParser parser;
 	private FpcFactory factory;
-	private Registry registry;
+	private Registry registry = new TreeRegistry();
+
+	private Map<Integer, RestTask> taskMap = new ConcurrentHashMap<>();
 
 	public PerLaController(List<String> packages, List<String> mapperFcts,
 			List<String> channelFcts, List<String> requestBuilderFcts)
@@ -81,7 +86,6 @@ public class PerLaController {
 			}
 
 			factory = new BaseFpcFactory(mfList, cfList, rbfList);
-			registry = new TreeRegistry();
 			logger.info("PerLaController initialized successfully");
 
 		} catch (Exception e) {
@@ -121,16 +125,41 @@ public class PerLaController {
 
 	public int queryPeriodic(Collection<Attribute> atts, long periodMs)
 			throws PerLaException {
-		int id = taskIdCount.addAndGet(1);
-		TaskHandler h = new STOMPHandler(msg, id);
-
 		Collection<Fpc> fpcs = registry.getByAttribute(atts,
 				Collections.emptyList());
-		for (Fpc f : fpcs) {
-			f.get(atts, periodMs, h);
+
+		if (fpcs.size() == 0) {
+			throw new PerLaException(
+					"Requested attributes are not available on any device");
 		}
 
+		int id = taskIdCount.addAndGet(1);
+		TaskHandler h = new StompHandler(msg, id);
+		Collection<Integer> fpcIds = new ArrayList<>();
+		Collection<Task> tasks = new ArrayList<>();
+		for (Fpc f : fpcs) {
+			fpcIds.add(f.getId());
+			tasks.add(f.get(atts, periodMs, h));
+		}
+
+		taskMap.put(id, new RestTask(id, atts, fpcIds, tasks));
 		return id;
+	}
+
+	public RestTask getTask(int id) {
+		return taskMap.get(id);
+	}
+
+	public Collection<RestTask> getAllTasks() {
+		return taskMap.values();
+	}
+	
+	public void stopTask(int id) {
+		RestTask t = taskMap.remove(id);
+		if (t == null) {
+			return;
+		}
+		t.stop();
 	}
 
 }

@@ -14,7 +14,7 @@ import org.dei.perla.fpc.Fpc;
 import org.dei.perla.fpc.descriptor.DataType;
 import org.dei.perla.rest.controller.PerLaController;
 import org.dei.perla.rest.controller.PerLaException;
-import org.dei.perla.rest.response.Error;
+import org.dei.perla.rest.controller.RestTask;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -30,30 +30,60 @@ public class RestV1 {
 
 	@Resource
 	private PerLaController ctrl;
-	
+
 	@RequestMapping(value = "/query", method = RequestMethod.GET)
 	public ResponseEntity<Object> startQuery(final WebRequest req) {
 		Map<String, String[]> params = req.getParameterMap();
-		
+
 		if (params.size() == 0) {
-			return new ResponseEntity<>(new Error("missing query attributes"), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Result("error",
+					"missing query attributes"), HttpStatus.BAD_REQUEST);
 		}
-		
+
 		Collection<Attribute> atts = null;
 		try {
-			 atts = parseAttributes(params);
+			atts = parseAttributes(params);
 		} catch (PerLaException e) {
-			return new ResponseEntity<>(new Error(e), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Result(e), HttpStatus.BAD_REQUEST);
 		}
-		
+
 		int id = 0;
 		try {
 			id = ctrl.queryPeriodic(atts, 1000);
 		} catch (PerLaException e) {
-			return new ResponseEntity<>(new Error(e), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Result(e), HttpStatus.BAD_REQUEST);
+		}
+
+		return new ResponseEntity<>(id, HttpStatus.ACCEPTED);
+	}
+
+	@RequestMapping(value = "/task", method = RequestMethod.GET)
+	public ResponseEntity<Object> getAllTasks() {
+		Collection<RestTask> tasks = ctrl.getAllTasks();
+		return new ResponseEntity<>(tasks, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/task/{id}", method = RequestMethod.GET)
+	public ResponseEntity<Object> getTask(@PathVariable("id") Integer id) {
+		RestTask t = ctrl.getTask(id);
+		if (t == null) {
+			return new ResponseEntity<>(new Result("error", "not found"),
+					HttpStatus.NOT_FOUND);
+		}
+		return new ResponseEntity<>(t, HttpStatus.OK);
+	}
+
+	@RequestMapping(value = "/task/{id}", method = RequestMethod.DELETE)
+	public ResponseEntity<Object> stopTask(@PathVariable("id") Integer id) {
+		RestTask t = ctrl.getTask(id);
+		if (t == null) {
+			return new ResponseEntity<>(new Result("error", "not found"),
+					HttpStatus.NOT_FOUND);
 		}
 		
-		return new ResponseEntity<>(id, HttpStatus.OK);
+		ctrl.stopTask(id);
+		return new ResponseEntity<>(new Result("ok", "stopping task '" + id
+				+ "'"), HttpStatus.ACCEPTED);
 	}
 
 	@RequestMapping(value = "/fpc", method = RequestMethod.PUT, headers = "content-type=text/xml,application/xml")
@@ -62,7 +92,7 @@ public class RestV1 {
 		try {
 			return new ResponseEntity<>(ctrl.createFpc(is), HttpStatus.CREATED);
 		} catch (PerLaException e) {
-			return new ResponseEntity<>(new Error(e), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Result(e), HttpStatus.BAD_REQUEST);
 		}
 	}
 
@@ -78,11 +108,11 @@ public class RestV1 {
 		try {
 			atts = parseAttributes(params);
 		} catch (PerLaException e) {
-			return new ResponseEntity<>(new Error(e), HttpStatus.BAD_REQUEST);
+			return new ResponseEntity<>(new Result(e), HttpStatus.BAD_REQUEST);
 		}
 		return new ResponseEntity<>(ctrl.getFpcByAttribute(atts), HttpStatus.OK);
 	}
-	
+
 	@RequestMapping(value = "/fpc/{id}", method = RequestMethod.GET)
 	public ResponseEntity<Object> getFPC(@PathVariable("id") Integer id) {
 		Fpc fpc = ctrl.getFpc(id);
