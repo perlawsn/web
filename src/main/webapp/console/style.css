@@ -1,0 +1,10 @@
+@CHARSET "UTF-8";
+
+.main-content {
+	margin: auto;
+	width: 500px;
+}
+
+.ui-listview>li p.wrap {
+	white-space: normal;
+}

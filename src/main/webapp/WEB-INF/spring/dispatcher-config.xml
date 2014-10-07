@@ -18,7 +18,9 @@
         http://www.springframework.org/schema/websocket/spring-websocket-4.1.xsd">
 
   <context:component-scan base-package="org.dei.perla.rest"/>
+  
   <mvc:annotation-driven/>
+  <mvc:resources mapping="/console/**" location="/console/" />
   
   <util:list id="packages">
     <value>org.dei.perla.fpc.descriptor</value>
