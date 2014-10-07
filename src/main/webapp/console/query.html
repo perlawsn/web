@@ -38,7 +38,7 @@ function display(queries) {
 	$.each(queries, function(i, q) {
 		var elemId = 'query-' + q.id;
 		var item = '<li>';
-		item += '<a href="#">'
+		item += '<a href="/perla-web/console/query/' + q.id + '">'
 		item += '<h1>Id: ' + q.id + '</h1>';
 		item += '<p class="wrap">';
 		item += '<strong>Attributes:</strong> ';

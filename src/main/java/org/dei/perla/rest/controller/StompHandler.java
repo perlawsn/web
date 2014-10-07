@@ -25,7 +25,11 @@ public class StompHandler implements TaskHandler {
 
 	@Override
 	public synchronized void newRecord(Task task, Record record) {
-		msg.convertAndSend(dest, convert(record));
+		try {
+			msg.convertAndSend(dest, convert(record));
+		} catch (Exception e) {
+			System.out.println(e);
+		}
 	}
 
 	@Override

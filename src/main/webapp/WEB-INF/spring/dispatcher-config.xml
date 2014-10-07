@@ -48,6 +48,15 @@
     <constructor-arg name="requestBuilderFcts" ref="requestBuilderFcts"/>
   </bean>
   
+  <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+    <property name="prefix">
+      <value>/WEB-INF/views/</value>
+    </property>
+    <property name="suffix">
+      <value>.jsp</value>
+    </property>
+  </bean>
+  
   <websocket:message-broker application-destination-prefix="app">
     <websocket:stomp-endpoint path="/query"/>
     <websocket:simple-broker prefix="/output/"/>
