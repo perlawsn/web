@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<link rel="stylesheet" href="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.css"/>
+<link rel="stylesheet" href="style.css"/>
+<script src="http://code.jquery.com/jquery-1.11.1.min.js"></script>
+<script type="text/javascript">
+$(document).bind("mobileinit", function () {
+    $.mobile.ajaxEnabled = false;
+});
+</script>
+<script src="http://code.jquery.com/mobile/1.4.4/jquery.mobile-1.4.4.min.js"></script>
+<script type="text/javascript">
+$(document).on('pageinit', function() {
+	
+	// Load FPC list
+	$.ajax({
+		url: '/perla-web/rest/v1/task',
+		dataType: 'json',
+		async: true,
+		success: function(queries) {
+			display(queries);
+		},
+		error: function(request, error) {
+			alert('Error while retrieving FPC data: ' + error);
+		}
+	});
+});
+
+function display(queries) {
+	if (queries.length == 0) {
+		$('#query-list').append('<li>No query found</li>');
+		$('#query-list').listview('refresh');
+		return;
+	}
+
+	$.each(queries, function(i, q) {
+		var elemId = 'query-' + q.id;
+		var item = '<li>';
+		item += '<a href="#">'
+		item += '<h1>Id: ' + q.id + '</h1>';
+		item += '<p class="wrap">';
+		item += '<strong>Attributes:</strong> ';
+		$.each(q.attributes, function(i, a) {
+			item += a.id + ' (' + a.type + ')';
+			if (i != q.attributes.length - 1) {
+				item += ', ';
+			}
+		});
+		item += '</p>';
+		item += '<p class="wrap">'
+		item += '<strong>FPCs:</strong> ';
+		$.each(q.fpcs, function(i, f) {
+			item += f;
+			if (i != q.fpcs.length - 1) {
+				item += ', ';
+			} 
+		});
+		item += '</p>';
+		item += '</a>';
+		item += '<a id="' + elemId + '">Stop Query</a>';
+		item += '</li>';
+		$('#query-list').append(item);
+		
+		$('#' + elemId).click(function() {
+			stopQuery(q.id);
+		});
+	});
+	$('#query-list').listview('refresh');
+}
+
+function stopQuery(id) {
+	$.ajax({
+		url: '/perla-web/rest/v1/task/' + id,
+		dataType: 'json',
+		type: 'delete',
+		async: true,
+		success: function(queries) {
+			location.reload();
+		},
+		error: function(request, error) {
+			alert('Error while stopping query: ' + error);
+		}
+	});
+}
+</script>
+<title>PerLa Web Console</title>
+</head>
+<body>
+<div data-role="page">
+
+	<div data-role="header">
+		<h1>PerLa Web Console</h1>
+	</div>
+
+	<div role="main" class="ui-content main-content">
+		<h2>
+		Query Management
+		</h2>
+		
+		<ul data-role="listview" data-split-icon="delete" data-inset="true" id="query-list">
+
+        </ul>
+	</div>
+
+	<div data-role="footer">
+		<h4>PerLa 2014</h4>
+	</div>
+</div>
+</body>
+</html>

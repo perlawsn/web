@@ -55,13 +55,19 @@ $(document).on('pageinit', function() {
 });
 
 function display(fpcs) {
+	if (fpcs.length == 0) {
+		$('#fpc-list').append('<li>No FPC found</li>');
+		$('#fpc-list').listview('refresh');
+		return;
+	}
+
 	$.each(fpcs, function(i, f) {
 		var item = '<li>';
 		item += '<h1>Id: ' + f.id + '</h1>';
 		item += '<p class="wrap">';
 		$.each(f.attributes, function(i, a) {
 			item += a.id + ' (' + a.type + ')';
-			if (i < f.attributes.length) {
+			if (i != f.attributes.length - 1) {
 				item += ', ';
 			}
 		});
@@ -90,14 +96,14 @@ function display(fpcs) {
 		<label for="descriptor">Device descriptor:</label>
 		<input type="file" name="descriptor" id="descriptor" value="">
 		
-		<ul data-role="listview" data-inset="true" id="fpc-list" style="white-space: normal">
+		<ul data-role="listview" data-inset="true" id="fpc-list">
                 
         </ul>
 	</div>
 
 	<div data-role="footer">
-		<h4>Page Footer</h4>
-	</div><!-- /footer -->
-</div><!-- /page -->
+		<h4>PerLa 2014</h4>
+	</div>
+</div>
 </body>
 </html>
