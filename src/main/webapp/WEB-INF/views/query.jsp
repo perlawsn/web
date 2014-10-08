@@ -17,8 +17,9 @@ $(document).on('pageinit', function() {
 			success: function(result) {
 				location.reload();
 			},
-			error: function(request, error) {
-				alert('Error while starting new query')
+			error: function(resp) {
+				var msg = resp.responseJSON.message;
+				alert('Error while starting new query: ' + msg)
 			}
 		});
 	});
@@ -31,8 +32,9 @@ $(document).on('pageinit', function() {
 		success: function(queries) {
 			display(queries);
 		},
-		error: function(request, error) {
-			alert('Error while retrieving queries');
+		error: function(resp) {
+			var msg = resp.responseJSON.message;
+			alert('Error while retrieving queries: ' + msg);
 		}
 	});
 });
@@ -88,8 +90,9 @@ function stopQuery(id) {
 		success: function(result) {
 			location.reload();
 		},
-		error: function(request, error) {
-			alert('Error while stopping query');
+		error: function(resp) {
+			var msg = resp.responseJSON.message;
+			alert('Error while stopping query: ' + msg);
 		}
 	});
 }

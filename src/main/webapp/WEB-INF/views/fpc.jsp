@@ -15,8 +15,9 @@ $(document).on('pageinit', function() {
 		success: function(fpcs) {
 			display(fpcs);
 		},
-		error: function(request, error) {
-			alert('Error while retrieving FPC list');
+		error: function(resp) {
+			var msg = resp.responseJSON.message;
+			alert('Error while retrieving FPC list: ' + msg);
 		}
 	});
 	
@@ -37,8 +38,9 @@ $(document).on('pageinit', function() {
         		success: function(result) {
         			location.reload();
         		},
-        		error: function(request, error) {
-        			alert('Error');
+        		error: function(resp) {
+        			var msg = resp.responseJSON.message;
+        			alert('Error while uploading Device Descriptor: ' + msg);
         		}
         	});
         	
