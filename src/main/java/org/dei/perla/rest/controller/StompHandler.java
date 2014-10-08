@@ -3,6 +3,7 @@ package org.dei.perla.rest.controller;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.dei.perla.fpc.Task;
 import org.dei.perla.fpc.TaskHandler;
 import org.dei.perla.fpc.engine.Record;
@@ -10,17 +11,21 @@ import org.springframework.messaging.core.MessageSendingOperations;
 
 public class StompHandler implements TaskHandler {
 
+	private final Logger log = Logger.getLogger(StompHandler.class);
+
 	private final MessageSendingOperations<String> msg;
+	private final int id;
 	private final String dest;
 
 	public StompHandler(MessageSendingOperations<String> msg, int id) {
 		this.msg = msg;
+		this.id = id;
 		this.dest = "/output/" + id;
 	}
 
 	@Override
 	public void complete(Task task) {
-		System.out.println("completed");
+		log.debug("Task in query '" + id + "' completed");
 	}
 
 	@Override
@@ -34,7 +39,7 @@ public class StompHandler implements TaskHandler {
 
 	@Override
 	public void error(Task task, Throwable cause) {
-		System.out.println("error");
+		log.error("Error in query '" + id + "'", cause);
 	}
 
 	private Map<String, String> convert(Record record) {

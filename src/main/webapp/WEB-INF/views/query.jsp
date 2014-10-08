@@ -114,7 +114,7 @@ function stopQuery(id) {
 		
 		<fieldset class="ui-grid-a">
 			<div class="ui-block-a" style="width:75%">
-				<input type="text" name="query" id="query" value="temp_c=float&period=1000">
+				<input type="text" name="query" id="query" value="id=id&temp_c=float&timestamp=timestamp&period=1000">
 			</div>
 			<div class="ui-block-b" style="width: 25%">
 				<a id="add-query" class="ui-shadow ui-btn ui-corner-all ui-btn-inline ui-btn-icon-left ui-icon-plus">Add</a>
