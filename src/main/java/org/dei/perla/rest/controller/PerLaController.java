@@ -138,8 +138,16 @@ public class PerLaController {
 		Collection<Integer> fpcIds = new ArrayList<>();
 		Collection<Task> tasks = new ArrayList<>();
 		for (Fpc f : fpcs) {
+			Task t = f.get(atts, periodMs, h);
+			if (t == null) {
+				continue;
+			}
 			fpcIds.add(f.getId());
-			tasks.add(f.get(atts, periodMs, h));
+			tasks.add(t);
+		}
+
+		if (tasks.size() == 0) {
+			throw new PerLaException("No FPC can satisfy the requested query");
 		}
 
 		taskMap.put(id, new RestTask(id, atts, fpcIds, tasks));
@@ -153,7 +161,7 @@ public class PerLaController {
 	public Collection<RestTask> getAllTasks() {
 		return taskMap.values();
 	}
-	
+
 	public void stopTask(int id) {
 		RestTask t = taskMap.remove(id);
 		if (t == null) {
