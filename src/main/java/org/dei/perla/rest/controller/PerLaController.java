@@ -7,7 +7,9 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.locks.ReadWriteLock;
+import java.util.concurrent.locks.ReentrantReadWriteLock;
 
 import org.apache.log4j.Logger;
 import org.dei.perla.channel.ChannelFactory;
@@ -23,6 +25,7 @@ import org.dei.perla.fpc.descriptor.DeviceDescriptorParseException;
 import org.dei.perla.fpc.descriptor.DeviceDescriptorParser;
 import org.dei.perla.fpc.descriptor.InvalidDeviceDescriptorException;
 import org.dei.perla.fpc.descriptor.JaxbDeviceDescriptorParser;
+import org.dei.perla.fpc.engine.Executor;
 import org.dei.perla.fpc.registry.Registry;
 import org.dei.perla.fpc.registry.TreeRegistry;
 import org.dei.perla.message.MapperFactory;
@@ -36,8 +39,11 @@ public class PerLaController {
 	@Autowired
 	private MessageSendingOperations<String> msg;
 
-	private AtomicInteger nodeIdCount = new AtomicInteger(0);
-	private AtomicInteger taskIdCount = new AtomicInteger(0);
+	// Id generators
+	private int nodeIdCount = 0;
+	private int taskIdCount = 0;
+
+	private ReadWriteLock l = new ReentrantReadWriteLock();
 
 	private DeviceDescriptorParser parser;
 	private FpcFactory factory;
@@ -94,80 +100,148 @@ public class PerLaController {
 	}
 
 	public Fpc createFpc(InputStream descriptor) throws PerLaException {
-		Fpc fpc = null;
-		int id = nodeIdCount.addAndGet(1);
-
+		l.writeLock().lock();
 		try {
-			DeviceDescriptor d = parser.parse(descriptor);
-			fpc = factory.createFpc(d, id);
-			registry.add(fpc);
-		} catch (DeviceDescriptorParseException e) {
-			logger.error("Error parsing device descriptor", e);
-		} catch (InvalidDeviceDescriptorException e) {
-			logger.error("Error creating FPC", e);
-		}
+			Fpc fpc = null;
+			int id = nodeIdCount++;
 
-		logger.info("FPC '" + id + "' created and added to the register");
-		return fpc;
+			try {
+				DeviceDescriptor d = parser.parse(descriptor);
+				fpc = factory.createFpc(d, id);
+				registry.add(fpc);
+			} catch (DeviceDescriptorParseException e) {
+				logger.error("Error parsing device descriptor", e);
+			} catch (InvalidDeviceDescriptorException e) {
+				logger.error("Error creating FPC", e);
+			}
+
+			logger.info("FPC '" + id + "' created and added to the register");
+			return fpc;
+		} finally {
+			l.writeLock().unlock();
+		}
 	}
 
 	public Fpc getFpc(int id) {
-		return registry.get(id);
+		l.readLock().lock();
+		try {
+			return registry.get(id);
+		} finally {
+			l.readLock().unlock();
+		}
 	}
 
 	public Collection<Fpc> getAllFpcs() {
-		return registry.getAll();
+		l.readLock().lock();
+		try {
+			return registry.getAll();
+		} finally {
+			l.readLock().unlock();
+		}
 	}
 
 	public Collection<Fpc> getFpcByAttribute(Collection<Attribute> with) {
-		return registry.getByAttribute(with, Collections.emptyList());
+		l.readLock().lock();
+		try {
+			return registry.getByAttribute(with, Collections.emptyList());
+		} finally {
+			l.readLock().unlock();
+		}
 	}
 
 	public int queryPeriodic(Collection<Attribute> atts, long periodMs)
 			throws PerLaException {
-		Collection<Fpc> fpcs = registry.getByAttribute(atts,
-				Collections.emptyList());
+		l.writeLock().lock();
+		try {
+			Collection<Fpc> fpcs = registry.getByAttribute(atts,
+					Collections.emptyList());
 
-		if (fpcs.size() == 0) {
-			throw new PerLaException(
-					"Requested attributes are not available on any device");
-		}
-
-		int id = taskIdCount.addAndGet(1);
-		TaskHandler h = new StompHandler(msg, id);
-		Collection<Integer> fpcIds = new ArrayList<>();
-		Collection<Task> tasks = new ArrayList<>();
-		for (Fpc f : fpcs) {
-			Task t = f.get(atts, periodMs, h);
-			if (t == null) {
-				continue;
+			if (fpcs.size() == 0) {
+				throw new PerLaException(
+						"Requested attributes are not available on any device");
 			}
-			fpcIds.add(f.getId());
-			tasks.add(t);
-		}
 
-		if (tasks.size() == 0) {
-			throw new PerLaException("No FPC can satisfy the requested query");
-		}
+			int id = taskIdCount++;
+			TaskHandler h = new StompHandler(msg, id);
+			Collection<Integer> fpcIds = new ArrayList<>();
+			Collection<Task> tasks = new ArrayList<>();
+			for (Fpc f : fpcs) {
+				Task t = f.get(atts, periodMs, h);
+				if (t == null) {
+					continue;
+				}
+				fpcIds.add(f.getId());
+				tasks.add(t);
+			}
 
-		taskMap.put(id, new RestTask(id, atts, fpcIds, tasks));
-		return id;
+			if (tasks.size() == 0) {
+				throw new PerLaException(
+						"No FPC can satisfy the requested query");
+			}
+
+			taskMap.put(id, new RestTask(id, atts, fpcIds, tasks));
+			return id;
+		} finally {
+			l.writeLock().unlock();
+		}
 	}
 
 	public RestTask getTask(int id) {
-		return taskMap.get(id);
+		l.readLock().lock();
+		try {
+			return taskMap.get(id);
+		} finally {
+			l.readLock().unlock();
+		}
 	}
 
 	public Collection<RestTask> getAllTasks() {
-		return taskMap.values();
+		l.readLock().lock();
+		try {
+			return taskMap.values();
+		} finally {
+			l.readLock().unlock();
+		}
 	}
 
 	public void stopTask(int id) {
-		RestTask t = taskMap.remove(id);
-		if (t == null) {
-			return;
+		l.writeLock().lock();
+		try {
+			RestTask t = taskMap.remove(id);
+			if (t == null) {
+				return;
+			}
+			t.stop();
+		} finally {
+			l.writeLock().unlock();
 		}
-		t.stop();
+	}
+
+	public void shutdown() {
+		l.writeLock().lock();
+		try {
+			logger.info("Stopping all active queries...");
+			for (int i : taskMap.keySet()) {
+				stopTask(i);
+			}
+			logger.info("Stopping all active FPCs...");
+			CountDownLatch l = new CountDownLatch(registry.getAll().size());
+			for (Fpc f : registry.getAll()) {
+				f.stop((stopped) -> {
+					registry.remove(stopped);
+					l.countDown();
+				});
+			}
+			try {
+				l.await();
+				Executor.shutdown(20);
+				logger.info("PerLa system successfully stopped");
+			} catch (InterruptedException e) {
+				logger.error("PerLa shutdown sequence interrupted", e);
+			}
+		} finally {
+			l.writeLock().unlock();
+		}
 	}
 
 }
