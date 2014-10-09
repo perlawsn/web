@@ -115,7 +115,7 @@ public class PerLaController {
 				logger.error("Error creating FPC", e);
 			}
 
-			logger.info("FPC '" + id + "' created and added to the register");
+			logger.debug("FPC '" + id + "' created and added to the register");
 			return fpc;
 		} finally {
 			l.writeLock().unlock();

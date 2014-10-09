@@ -8,8 +8,6 @@
 $(document).on('pageinit', function() {
 	
 	$('#add-query').click(function() {
-		console.log('/perla-web/rest/v1/query?' + $('#query').val());
-		
 		$.ajax({
 			url: '/perla-web/rest/v1/query?' + $('#query').val(),
 			dataType: 'json',

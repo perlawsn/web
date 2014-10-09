@@ -18,8 +18,8 @@
 			success: function(q) {
 				query = q;
 				createTableHeader(q.attributes);
-				client = Stomp.client("ws://localhost:8080/perla-web/query");
-				client.connect("guest", "guest", connectCback, errorCback);
+				client = Stomp.client('ws://<%=request.getServerName()%>:<%=request.getServerPort()%>/perla-web/query');
+				client.connect('guest', 'guest', connectCback, errorCback);
 			},
 			error: function(resp) {
 				var msg = resp.responseJSON.message;
