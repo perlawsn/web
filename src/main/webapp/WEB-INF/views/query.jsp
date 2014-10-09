@@ -107,11 +107,9 @@ function stopQuery(id) {
 		<h1>PerLa Web Console</h1>
 	</div>
 
-	<div role="main" class="ui-content main-content">
-		<h2>
-		Query Management
-		</h2>
-		
+	<div role="main" class="ui-content narrow-content">
+		<h2>Query Management</h2>
+	
 		<fieldset class="ui-grid-a">
 			<div class="ui-block-a" style="width:75%">
 				<input type="text" name="query" id="query" value="id=id&temp_c=float&timestamp=timestamp&period=1000">
@@ -123,7 +121,7 @@ function stopQuery(id) {
 		
 		<ul data-role="listview" data-split-icon="delete" data-inset="true" id="query-list">
 
-        </ul>
+       	</ul>
 	</div>
 
 	<div data-role="footer">

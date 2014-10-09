@@ -84,10 +84,8 @@ function display(fpcs) {
 		<h1>PerLa Web Console</h1>
 	</div>
 
-	<div role="main" class="ui-content main-content">
-		<h2>
-		FPC Management
-		</h2>
+	<div role="main" class="ui-content narrow-content">
+		<h2>FPC Management</h2>
 		
 		<label for="descriptor">Device descriptor:</label>
 		<input type="file" name="descriptor" id="descriptor" value="">

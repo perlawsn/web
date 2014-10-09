@@ -13,10 +13,8 @@
 		<h1>PerLa Web Console</h1>
 	</div>
 
-	<div role="main" class="ui-content main-content">
-		<h2>
-		Welcome to the PerLa Web Console!
-		</h2>
+	<div role="main" class="ui-content narrow-content">
+		<h2>Welcome to the PerLa Web Console!</h2>
 		<p>
 		Select FPC management to list the available devices, or to add a new one.
 		Select Query Management to manage running queries or to start a new one

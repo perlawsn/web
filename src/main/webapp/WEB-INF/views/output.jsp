@@ -69,7 +69,7 @@
 			<h1>PerLa Web Console</h1>
 		</div>
 
-		<div role="main" class="ui-content main-content">
+		<div role="main" class="ui-content wide-content">
 			<h2>Query output (Id: ${id})</h2>
 			
 			<table data-role="table" id="table" class="ui-body-d ui-shadow table-stripe ui-responsive">

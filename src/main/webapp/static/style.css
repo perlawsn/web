@@ -1,6 +1,11 @@
 @CHARSET "UTF-8";
 
-.main-content {
+.wide-content {
+	margin: auto;
+	width: 800px;
+}
+
+.narrow-content {
 	margin: auto;
 	width: 500px;
 }

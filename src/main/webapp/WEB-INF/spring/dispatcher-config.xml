@@ -45,7 +45,7 @@
   	<value>org.dei.perla.channel.simulator.SimulatorIORequestBuilderFactory</value>
   </util:list>
   
-  <bean class="org.dei.perla.rest.controller.PerLaController" scope="singleton">
+  <bean class="org.dei.perla.rest.controller.PerLaController" scope="singleton" destroy-method="shutdown">
     <constructor-arg name="packages" ref="packages"/>
     <constructor-arg name="mapperFcts" ref="mapperFcts"/>
     <constructor-arg name="channelFcts" ref="channelFcts"/>
