@@ -183,9 +183,7 @@ public class PerLaController {
 		l.writeLock().lock();
 		try {
 			logger.info("Stopping all active queries...");
-			for (int i : taskMap.keySet()) {
-				stopTask(i);
-			}
+            taskMap.keySet().forEach(this::stopTask);
 			logger.info("Stopping all active FPCs...");
 			CountDownLatch l = new CountDownLatch(registry.getAll().size());
 			for (Fpc f : registry.getAll()) {
