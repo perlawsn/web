@@ -51,52 +51,14 @@ public class PerLaController {
 
 	private Map<Integer, RestTask> taskMap = new ConcurrentHashMap<>();
 
-	public PerLaController(List<String> packages, List<String> mapperFcts,
-			List<String> channelFcts, List<String> requestBuilderFcts)
+	public PerLaController(List<String> packages,
+			List<MapperFactory> mapperFcts, List<ChannelFactory> channelFcts,
+			List<IORequestBuilderFactory> requestBuilderFcts)
 			throws PerLaException {
 		parser = new JaxbDeviceDescriptorParser(packages);
-
-		try {
-			List<MapperFactory> mfList = new ArrayList<>();
-			for (String s : mapperFcts) {
-				Object c = Class.forName(s).newInstance();
-				if (!(c instanceof MapperFactory)) {
-					String msg = "Class '" + s + "' is not a MapperFactory";
-					logger.error(msg);
-					throw new PerLaException(msg);
-				}
-				mfList.add((MapperFactory) c);
-			}
-
-			List<ChannelFactory> cfList = new ArrayList<>();
-			for (String s : channelFcts) {
-				Object c = Class.forName(s).newInstance();
-				if (!(c instanceof ChannelFactory)) {
-					String msg = "Class '" + s + "' is not a ChannelFactory";
-					logger.error(msg);
-					throw new PerLaException(msg);
-				}
-				cfList.add((ChannelFactory) c);
-			}
-
-			List<IORequestBuilderFactory> rbfList = new ArrayList<>();
-			for (String s : requestBuilderFcts) {
-				Object c = Class.forName(s).newInstance();
-				if (!(c instanceof IORequestBuilderFactory)) {
-					String msg = "Class '" + s
-							+ "' is not an IORequestBuilderFactory";
-					logger.error(msg);
-					throw new PerLaException(msg);
-				}
-				rbfList.add((IORequestBuilderFactory) c);
-			}
-
-			factory = new BaseFpcFactory(mfList, cfList, rbfList);
-			logger.info("PerLaController initialized successfully");
-
-		} catch (Exception e) {
-			throw new PerLaException("Error creating FPCFactory", e);
-		}
+		factory = new BaseFpcFactory(mapperFcts, channelFcts,
+				requestBuilderFcts);
+		logger.info("PerLaController initialized successfully");
 	}
 
 	public Fpc createFpc(InputStream descriptor) throws PerLaException {
