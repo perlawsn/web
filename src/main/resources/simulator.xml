@@ -5,19 +5,19 @@
 	xmlns:sim="http://perla.dei.org/channel/simulator">
 
 	<attributes>
-		<attribute id="temp_k" type="float" permission="read-only"/>
+		<attribute id="temp_c" type="float" permission="read-only"/>
 		<attribute id="period" type="integer" permission="write-only"/>
 	</attributes>
-	
+
 	<channels>
 		<sim:channel id="simulator">
 			<sim:generator id="temperature">
-				<sim:field name="temperature" qualifier="dynamic" 
-					type="integer" min="12" max="32"/>
+				<sim:field name="temperature" strategy="step"
+					type="integer" min="16" max="20" increment="1"/>
 			</sim:generator>
 		</sim:channel>
 	</channels>
-	
+
 	<messages>
 		<sim:message id="temperature-msg">
 			<sim:field name="temperature" type="integer"/>
@@ -26,11 +26,11 @@
 			<sim:field name="period" type="integer"/>
 		</sim:message>
 	</messages>
-	
+
 	<requests>
 		<sim:request id="temperature-request" generator="temperature"/>
 	</requests>
-	
+
 	<operations>
 		<periodic id="all-periodic">
 			<start>
@@ -48,10 +48,10 @@
 				</i:submit>
 			</stop>
 			<on message="temperature-msg" variable="result">
-				<i:put expression="${result.temperature}" attribute="temp_k" />
+				<i:put expression="${result.temperature}" attribute="temp_c" />
 				<i:emit />
 			</on>
 		</periodic>
 	</operations>
-	
+
 </device>
