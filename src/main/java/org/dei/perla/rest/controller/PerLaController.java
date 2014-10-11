@@ -111,7 +111,7 @@ public class PerLaController {
 		}
 	}
 
-	public int queryPeriodic(Collection<Attribute> atts, long periodMs)
+	public RestTask queryPeriodic(Collection<Attribute> atts, long periodMs)
 			throws PerLaException {
 		l.writeLock().lock();
 		try {
@@ -141,8 +141,9 @@ public class PerLaController {
 						"No FPC can satisfy the requested query");
 			}
 
-			taskMap.put(id, new RestTask(id, atts, fpcIds, tasks));
-			return id;
+            RestTask t = new RestTask(id, atts, periodMs, fpcIds, tasks);
+			taskMap.put(id, t);
+			return t;
 		} finally {
 			l.writeLock().unlock();
 		}

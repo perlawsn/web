@@ -63,14 +63,12 @@ public class RestV1 {
 			return new ResponseEntity<>(new Result(e), HttpStatus.BAD_REQUEST);
 		}
 
-		int id = 0;
 		try {
-			id = ctrl.queryPeriodic(atts, period);
+			RestTask t = ctrl.queryPeriodic(atts, period);
+            return new ResponseEntity<>(t, HttpStatus.ACCEPTED);
 		} catch (PerLaException e) {
 			return new ResponseEntity<>(new Result(e), HttpStatus.BAD_REQUEST);
 		}
-
-		return new ResponseEntity<>(id, HttpStatus.ACCEPTED);
 	}
 
 	@RequestMapping(value = "/query/running", method = RequestMethod.GET)

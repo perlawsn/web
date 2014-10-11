@@ -12,8 +12,9 @@ import org.dei.perla.fpc.Fpc;
 import org.dei.perla.fpc.descriptor.DataType;
 import org.dei.perla.message.MapperFactory;
 import org.dei.perla.message.json.JsonMapperFactory;
-import static org.hamcrest.MatcherAssert.*;
 import static org.hamcrest.Matchers.*;
+import static org.junit.Assert.*;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -58,14 +59,22 @@ public class TestPerLaController {
     public void testPerLaController() throws Exception {
         assertThat(ctrl.getAllFpcs().size(), equalTo(0));
         Fpc fpc = ctrl.createFpc(new FileInputStream("src/main/resources/simulator.xml"));
+        assertThat(fpc, notNullValue());
         assertThat(ctrl.getAllFpcs().size(), equalTo(1));
+        Fpc retrieved = ctrl.getFpc(fpc.getId());
+        assertThat(retrieved, notNullValue());
+        assertThat(retrieved.getId(), equalTo(fpc.getId()));
 
         Collection<Attribute> atts = new ArrayList<>();
         atts.add(new Attribute("temp_c", DataType.FLOAT));
         assertThat(ctrl.getAllTasks().size(), equalTo(0));
-        int t = ctrl.queryPeriodic(atts, 1000);
+
+        RestTask t = ctrl.queryPeriodic(atts, 1000);
         assertThat(ctrl.getAllTasks().size(), equalTo(1));
-        ctrl.stopTask(t);
+        assertThat(t.getPeriod(), equalTo(1000L));
+        assertTrue(t.getAttributes().containsAll(atts));
+
+        ctrl.stopTask(t.getId());
         assertThat(ctrl.getAllTasks().size(), equalTo(0));
     }
 

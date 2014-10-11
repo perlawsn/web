@@ -8,54 +8,58 @@ import org.dei.perla.fpc.Task;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
-public class RestTask implements Task {
+public class RestTask {
 
-	private AtomicBoolean running = new AtomicBoolean(true);
+    private AtomicBoolean running = new AtomicBoolean(true);
 
-	private int id;
-	private Collection<Attribute> attributes;
-	private Collection<Integer> fpcs;
+    private final int id;
+    private final long period;
+    private final Collection<Attribute> attributes;
+    private final Collection<Integer> fpcs;
 
-	@JsonIgnore
-	private Collection<Task> tasks;
+    @JsonIgnore
+    private Collection<Task> tasks;
 
-	public RestTask(int id, Collection<Attribute> attributes,
-			Collection<Integer> fpcs, Collection<Task> tasks) {
-		this.id = id;
-		this.attributes = attributes;
-		this.fpcs = fpcs;
-		this.tasks = tasks;
-	}
+    public RestTask(int id, Collection<Attribute> attributes,
+            long period, Collection<Integer> fpcs, Collection<Task> tasks) {
+        this.id = id;
+        this.period = period;
+        this.attributes = attributes;
+        this.fpcs = fpcs;
+        this.tasks = tasks;
+    }
 
-	public int getId() {
-		return id;
-	}
+    public int getId() {
+        return id;
+    }
 
-	public Collection<Attribute> getAttributes() {
-		return attributes;
-	}
+    public long getPeriod() {
+        return period;
+    }
 
-	public Collection<Integer> getFpcs() {
-		return fpcs;
-	}
+    public Collection<Attribute> getAttributes() {
+        return attributes;
+    }
 
-	public Collection<Task> getTasks() {
-		return tasks;
-	}
+    public Collection<Integer> getFpcs() {
+        return fpcs;
+    }
 
-	@Override
-	public boolean isRunning() {
-		return running.get();
-	}
+    public Collection<Task> getTasks() {
+        return tasks;
+    }
 
-	@Override
-	public void stop() {
-		if (!running.compareAndSet(true, false)) {
-			return;
-		}
-		for (Task t : tasks) {
-			t.stop();
-		}
-	}
+    public boolean isRunning() {
+        return running.get();
+    }
+
+    protected void stop() {
+        if (!running.compareAndSet(true, false)) {
+            return;
+        }
+        for (Task t : tasks) {
+            t.stop();
+        }
+    }
 
 }

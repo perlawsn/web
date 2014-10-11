@@ -6,7 +6,7 @@
 <%@include file="include/common_script.jsp" %>
 <script type="text/javascript">
 $(document).on('pageinit', function() {
-	
+
 	$('#add-query').click(function() {
 		$.ajax({
 			url: '/perla-web/rest/v1/query?' + $('#query').val(),
@@ -21,7 +21,7 @@ $(document).on('pageinit', function() {
 			}
 		});
 	});
-	
+
 	// Load FPC list
 	$.ajax({
 		url: '/perla-web/rest/v1/query/running',
@@ -49,6 +49,7 @@ function display(queries) {
 		var item = '<li>';
 		item += '<a href="/perla-web/console/query/' + q.id + '">'
 		item += '<h1>Id: ' + q.id + '</h1>';
+        item += '<p class="wrap"><strong>Period:</strong> ' + q.period + 'ms</p>';
 		item += '<p class="wrap">';
 		item += '<strong>Attributes:</strong> ';
 		$.each(q.attributes, function(i, a) {
@@ -64,14 +65,14 @@ function display(queries) {
 			item += f;
 			if (i != q.fpcs.length - 1) {
 				item += ', ';
-			} 
+			}
 		});
 		item += '</p>';
 		item += '</a>';
 		item += '<a id="' + elemId + '">Stop Query</a>';
 		item += '</li>';
 		$('#query-list').append(item);
-		
+
 		$('#' + elemId).click(function() {
 			stopQuery(q.id);
 		});
@@ -107,7 +108,7 @@ function stopQuery(id) {
 
 	<div role="main" class="ui-content narrow-content">
 		<h2>Query Management</h2>
-	
+
 		<fieldset class="ui-grid-a">
 			<div class="ui-block-a" style="width:75%">
 				<input type="text" name="query" id="query" value="id=id&temp_c=float&timestamp=timestamp&period=1000">
@@ -116,7 +117,7 @@ function stopQuery(id) {
 				<a id="add-query" class="ui-shadow ui-btn ui-corner-all ui-btn-inline ui-btn-icon-left ui-icon-plus">Add</a>
 			</div>
 		</fieldset>
-		
+
 		<ul data-role="listview" data-split-icon="delete" data-inset="true" id="query-list">
 
        	</ul>
