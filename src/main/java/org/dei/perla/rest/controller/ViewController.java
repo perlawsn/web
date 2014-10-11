@@ -13,18 +13,18 @@ public class ViewController {
 	public String index() {
 		return "index";
 	}
-	
+
 	@RequestMapping("/query/{id}")
 	public String queryOutput(@PathVariable("id") int id, Model model) {
 		model.addAttribute("id", id);
 		return "output";
 	}
-	
+
 	@RequestMapping("/query")
 	public String listQuery() {
 		return "query";
 	}
-	
+
 	@RequestMapping("/fpc")
 	public String listFpc() {
 		return "fpc";

@@ -4,9 +4,11 @@
 <head>
 <meta charset="UTF-8">
 <%@include file="include/common_script.jsp" %>
+<link rel="stylesheet" href="/perla-web/console/static/prettify.css"/>
+<script src="/perla-web/console/static/prettify.js"></script>
 <script type="text/javascript">
 $(document).on('pageinit', function() {
-	
+
 	// Load FPC list
 	$.ajax({
 		url: '/perla-web/rest/v1/fpc',
@@ -20,7 +22,7 @@ $(document).on('pageinit', function() {
 			alert('Error while retrieving FPC list: ' + msg);
 		}
 	});
-	
+
 	// Upload new Device Descriptor
 	$('#descriptor').change(function() {
 		var reader = new FileReader();
@@ -43,7 +45,7 @@ $(document).on('pageinit', function() {
         			alert('Error while uploading Device Descriptor: ' + msg);
         		}
         	});
-        	
+
 		};
         reader.readAsBinaryString(file);
 	});
@@ -57,7 +59,10 @@ function display(fpcs) {
 	}
 
 	$.each(fpcs, function(i, f) {
+        // List element
+        var btnPopId = 'btn-popup-' + f.id;
 		var item = '<li>';
+        item += '<a id="' + btnPopId + '">';
 		item += '<h1>Id: ' + f.id + '</h1>';
 		item += '<p class="wrap">';
 		$.each(f.attributes, function(i, a) {
@@ -67,9 +72,26 @@ function display(fpcs) {
 			}
 		});
 		item += '</p>';
+        item += '</a>';
 		item += '</li>';
-		
 		$('#fpc-list').append(item);
+
+        // Popup
+        var popup = $("<div/>").popup({
+            dismissible : true,
+            theme : "a",
+            overlyaTheme : "a",
+            transition : "pop"
+        }).append('<h4>Device Descriptor - Id:' + f.id + '</h4>');
+
+        $('<pre/>', {
+            text : f.descriptor
+        }).addClass('prettyprint lang-xml code').appendTo(popup);
+
+        $('#' + btnPopId).click(function(){
+            popup.popup("open");
+            prettyPrint();
+        });
 	});
 	$('#fpc-list').listview('refresh');
 }
@@ -86,12 +108,12 @@ function display(fpcs) {
 
 	<div role="main" class="ui-content narrow-content">
 		<h2>FPC Management</h2>
-		
+
 		<label for="descriptor">Device descriptor:</label>
 		<input type="file" name="descriptor" id="descriptor" value="">
-		
-		<ul data-role="listview" data-inset="true" id="fpc-list">
-                
+
+		<ul data-role="listview" data-inset="true" id="fpc-list" data-icon="info">
+
         </ul>
 	</div>
 
