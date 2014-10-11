@@ -64,6 +64,7 @@ function display(fpcs) {
 		var item = '<li>';
         item += '<a id="' + btnPopId + '">';
 		item += '<h1>Id: ' + f.id + '</h1>';
+        item += '<p class="wrap">' + f.type + '</p>';
 		item += '<p class="wrap">';
 		$.each(f.attributes, function(i, a) {
 			item += a.id + ' (' + a.type + ')';

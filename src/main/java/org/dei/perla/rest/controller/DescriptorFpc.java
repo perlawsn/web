@@ -28,6 +28,11 @@ public class DescriptorFpc implements Fpc {
     }
 
     @Override
+    public String getType() {
+        return fpc.getType();
+    }
+
+    @Override
     public Collection<Attribute> getAttributes() {
         return fpc.getAttributes();
     }

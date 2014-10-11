@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<device type="test-json" name="test"
+<device type="REST Weather station"
 	xmlns="http://perla.dei.org/device"
 	xmlns:js="http://perla.dei.org/fpc/message/json"
 	xmlns:http="http://perla.dei.org/channel/http"
@@ -15,17 +15,17 @@
 		<attribute id="wind_speed" type="float" permission="read-only"/>
 		<attribute id="wind_deg" type="float" permission="read-only"/>
 	</attributes>
-	
+
 	<channels>
 		<http:channel id="http"/>
 	</channels>
-	
+
 	<messages>
 		<js:object id="coord">
 			<js:value name="lon" type="string"/>
 			<js:value name="lat" type="string"/>
 		</js:object>
-		
+
 		<js:object id="main">
 			<js:value name="temp" type="float"/>
 			<js:value name="pressure" type="float"/>
@@ -33,26 +33,26 @@
 			<js:value name="temp_min" type="float"/>
 			<js:value name="temp_max" type="float"/>
 		</js:object>
-		
+
 		<js:object id="wind">
 			<js:value name="speed" type="float"/>
 			<js:value name="deg" type="float"/>
 		</js:object>
-		
+
 		<js:object id="weather">
  			<js:value name="coord" type="coord"/>
  			<js:value name="main" type="main"/>
  			<js:value name="wind" type="wind"/>
 		</js:object>
 	</messages>
-	
+
 	<requests>
 		<http:request
-			id="weather-mi" 
+			id="weather-mi"
 			host="http://api.openweathermap.org/data/2.5/weather?q=Milan,it"
 			method="get" />
 	</requests>
-	
+
 	<operations>
 		<get id="weather-mi">
 			<i:submit request="weather-mi" channel="http" variable="result" type="weather"/>
@@ -67,5 +67,5 @@
 			<i:emit/>
 		</get>
 	</operations>
-	
+
 </device>
