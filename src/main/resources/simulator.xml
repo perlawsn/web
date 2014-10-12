@@ -13,7 +13,7 @@
 		<sim:channel id="simulator">
 			<sim:generator id="temperature">
 				<sim:field name="temperature" strategy="step"
-					type="integer" min="16" max="20" increment="1"/>
+					type="float" min="16" max="20" increment="0.1"/>
 			</sim:generator>
 		</sim:channel>
 	</channels>
