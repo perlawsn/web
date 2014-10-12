@@ -28,3 +28,7 @@ pre.prettyprint.code {
     overflow-y: scroll;
     tab-size: 2;
 }
+
+#chart {
+    z-index: 1001;
+}
