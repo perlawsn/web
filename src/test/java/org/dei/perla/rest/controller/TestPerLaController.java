@@ -12,10 +12,6 @@ import org.dei.perla.fpc.Fpc;
 import org.dei.perla.fpc.descriptor.DataType;
 import org.dei.perla.message.MapperFactory;
 import org.dei.perla.message.json.JsonMapperFactory;
-import static org.hamcrest.Matchers.*;
-import static org.junit.Assert.*;
-
-import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -23,6 +19,11 @@ import java.io.FileInputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertThat;
+import static org.junit.Assert.assertTrue;
 
 /**
  * @author Guido Rota 10/10/14.
@@ -76,11 +77,6 @@ public class TestPerLaController {
 
         ctrl.stopTask(t.getId());
         assertThat(ctrl.getAllTasks().size(), equalTo(0));
-    }
-
-    @AfterClass
-    public static void teardown() {
-        ctrl.shutdown();
     }
 
 }
