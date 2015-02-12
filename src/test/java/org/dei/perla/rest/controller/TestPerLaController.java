@@ -9,7 +9,7 @@ import org.dei.perla.core.channel.simulator.SimulatorIORequestBuilderFactory;
 import org.dei.perla.core.channel.simulator.SimulatorMapperFactory;
 import org.dei.perla.core.fpc.Attribute;
 import org.dei.perla.core.fpc.Fpc;
-import org.dei.perla.core.fpc.descriptor.DataType;
+import org.dei.perla.core.descriptor.DataType;
 import org.dei.perla.core.message.MapperFactory;
 import org.dei.perla.core.message.json.JsonMapperFactory;
 import org.junit.BeforeClass;
@@ -35,8 +35,8 @@ public class TestPerLaController {
     @BeforeClass
     public static void setup() throws PerLaException {
         List<String> pkgs = new ArrayList<>();
-        pkgs.add("org.dei.perla.core.fpc.descriptor");
-        pkgs.add("org.dei.perla.core.fpc.descriptor.instructions");
+        pkgs.add("org.dei.perla.core.descriptor");
+        pkgs.add("org.dei.perla.core.descriptor.instructions");
         pkgs.add("org.dei.perla.core.channel.http");
         pkgs.add("org.dei.perla.core.message.json");
         pkgs.add("org.dei.perla.core.channel.simulator");
