@@ -1,17 +1,17 @@
 package org.dei.perla.rest.controller;
 
-import org.dei.perla.channel.ChannelFactory;
-import org.dei.perla.channel.IORequestBuilderFactory;
-import org.dei.perla.channel.http.HttpChannelFactory;
-import org.dei.perla.channel.http.HttpIORequestBuilderFactory;
-import org.dei.perla.channel.simulator.SimulatorChannelFactory;
-import org.dei.perla.channel.simulator.SimulatorIORequestBuilderFactory;
-import org.dei.perla.channel.simulator.SimulatorMapperFactory;
-import org.dei.perla.fpc.Attribute;
-import org.dei.perla.fpc.Fpc;
-import org.dei.perla.fpc.descriptor.DataType;
-import org.dei.perla.message.MapperFactory;
-import org.dei.perla.message.json.JsonMapperFactory;
+import org.dei.perla.core.channel.ChannelFactory;
+import org.dei.perla.core.channel.IORequestBuilderFactory;
+import org.dei.perla.core.channel.http.HttpChannelFactory;
+import org.dei.perla.core.channel.http.HttpIORequestBuilderFactory;
+import org.dei.perla.core.channel.simulator.SimulatorChannelFactory;
+import org.dei.perla.core.channel.simulator.SimulatorIORequestBuilderFactory;
+import org.dei.perla.core.channel.simulator.SimulatorMapperFactory;
+import org.dei.perla.core.fpc.Attribute;
+import org.dei.perla.core.fpc.Fpc;
+import org.dei.perla.core.fpc.descriptor.DataType;
+import org.dei.perla.core.message.MapperFactory;
+import org.dei.perla.core.message.json.JsonMapperFactory;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -35,11 +35,11 @@ public class TestPerLaController {
     @BeforeClass
     public static void setup() throws PerLaException {
         List<String> pkgs = new ArrayList<>();
-        pkgs.add("org.dei.perla.fpc.descriptor");
-        pkgs.add("org.dei.perla.fpc.descriptor.instructions");
-        pkgs.add("org.dei.perla.channel.http");
-        pkgs.add("org.dei.perla.message.json");
-        pkgs.add("org.dei.perla.channel.simulator");
+        pkgs.add("org.dei.perla.core.fpc.descriptor");
+        pkgs.add("org.dei.perla.core.fpc.descriptor.instructions");
+        pkgs.add("org.dei.perla.core.channel.http");
+        pkgs.add("org.dei.perla.core.message.json");
+        pkgs.add("org.dei.perla.core.channel.simulator");
 
         List<MapperFactory> mpFcts = new ArrayList<>();
         mpFcts.add(new SimulatorMapperFactory());

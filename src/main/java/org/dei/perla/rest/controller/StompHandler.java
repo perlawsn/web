@@ -4,9 +4,9 @@ import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
-import org.dei.perla.fpc.Task;
-import org.dei.perla.fpc.TaskHandler;
-import org.dei.perla.fpc.engine.Record;
+import org.dei.perla.core.fpc.Task;
+import org.dei.perla.core.fpc.TaskHandler;
+import org.dei.perla.core.fpc.engine.Record;
 import org.springframework.messaging.core.MessageSendingOperations;
 
 public class StompHandler implements TaskHandler {

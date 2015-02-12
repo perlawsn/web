@@ -2,15 +2,15 @@ package org.dei.perla.rest.controller;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.dei.perla.channel.ChannelFactory;
-import org.dei.perla.channel.IORequestBuilderFactory;
-import org.dei.perla.fpc.*;
-import org.dei.perla.fpc.base.BaseFpcFactory;
-import org.dei.perla.fpc.descriptor.*;
-import org.dei.perla.fpc.engine.Executor;
-import org.dei.perla.registry.Registry;
-import org.dei.perla.registry.TreeRegistry;
-import org.dei.perla.message.MapperFactory;
+import org.dei.perla.core.channel.ChannelFactory;
+import org.dei.perla.core.channel.IORequestBuilderFactory;
+import org.dei.perla.core.fpc.*;
+import org.dei.perla.core.fpc.base.BaseFpcFactory;
+import org.dei.perla.core.fpc.descriptor.*;
+import org.dei.perla.core.fpc.engine.Executor;
+import org.dei.perla.core.registry.Registry;
+import org.dei.perla.core.registry.TreeRegistry;
+import org.dei.perla.core.message.MapperFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.core.MessageSendingOperations;
 

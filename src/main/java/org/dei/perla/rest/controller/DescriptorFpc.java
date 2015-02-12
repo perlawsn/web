@@ -1,10 +1,10 @@
 package org.dei.perla.rest.controller;
 
-import org.dei.perla.fpc.Attribute;
-import org.dei.perla.fpc.Fpc;
-import org.dei.perla.fpc.Task;
-import org.dei.perla.fpc.TaskHandler;
-import org.dei.perla.utils.StopHandler;
+import org.dei.perla.core.fpc.Attribute;
+import org.dei.perla.core.fpc.Fpc;
+import org.dei.perla.core.fpc.Task;
+import org.dei.perla.core.fpc.TaskHandler;
+import org.dei.perla.core.utils.StopHandler;
 
 import java.util.Collection;
 import java.util.Map;

@@ -10,9 +10,9 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.dei.perla.fpc.Attribute;
-import org.dei.perla.fpc.Fpc;
-import org.dei.perla.fpc.descriptor.DataType;
+import org.dei.perla.core.fpc.Attribute;
+import org.dei.perla.core.fpc.Fpc;
+import org.dei.perla.core.fpc.descriptor.DataType;
 import org.dei.perla.rest.controller.PerLaController;
 import org.dei.perla.rest.controller.PerLaException;
 import org.dei.perla.rest.controller.RestTask;

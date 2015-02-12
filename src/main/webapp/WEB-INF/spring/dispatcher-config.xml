@@ -18,40 +18,40 @@
         http://www.springframework.org/schema/websocket/spring-websocket-4.1.xsd">
 
   <context:component-scan base-package="org.dei.perla.rest"/>
-  
+
   <mvc:annotation-driven/>
   <mvc:resources mapping="/console/static/**" location="/static/" />
-  
+
   <util:list id="packages">
-    <value>org.dei.perla.fpc.descriptor</value>
-    <value>org.dei.perla.fpc.descriptor.instructions</value>
-    <value>org.dei.perla.channel.http</value>
-    <value>org.dei.perla.message.json</value>
-    <value>org.dei.perla.channel.simulator</value>
+    <value>org.dei.perla.core.fpc.descriptor</value>
+    <value>org.dei.perla.core.fpc.descriptor.instructions</value>
+    <value>org.dei.perla.core.channel.http</value>
+    <value>org.dei.perla.core.message.json</value>
+    <value>org.dei.perla.core.channel.simulator</value>
   </util:list>
-  
-  <util:list id="mapperFcts" value-type="org.dei.perla.message.MapperFactory">
-    <bean class="org.dei.perla.message.json.JsonMapperFactory"/>
-    <bean class="org.dei.perla.channel.simulator.SimulatorMapperFactory"/>
+
+  <util:list id="mapperFcts" value-type="org.dei.perla.core.message.MapperFactory">
+    <bean class="org.dei.perla.core.message.json.JsonMapperFactory"/>
+    <bean class="org.dei.perla.core.channel.simulator.SimulatorMapperFactory"/>
   </util:list>
-  
-  <util:list id="channelFcts" value-type="org.dei.perla.channel.ChannelFactory">
-  	<bean class="org.dei.perla.channel.http.HttpChannelFactory"/>
-  	<bean class="org.dei.perla.channel.simulator.SimulatorChannelFactory"/>
+
+  <util:list id="channelFcts" value-type="org.dei.perla.core.channel.ChannelFactory">
+  	<bean class="org.dei.perla.core.channel.http.HttpChannelFactory"/>
+  	<bean class="org.dei.perla.core.channel.simulator.SimulatorChannelFactory"/>
   </util:list>
-  
-  <util:list id="requestBuilderFcts" value-type="org.dei.perla.channel.IORequestBuilderFactory">
-  	<bean class="org.dei.perla.channel.http.HttpIORequestBuilderFactory"/>
-  	<bean class="org.dei.perla.channel.simulator.SimulatorIORequestBuilderFactory"/>
+
+  <util:list id="requestBuilderFcts" value-type="org.dei.perla.core.channel.IORequestBuilderFactory">
+  	<bean class="org.dei.perla.core.channel.http.HttpIORequestBuilderFactory"/>
+  	<bean class="org.dei.perla.core.channel.simulator.SimulatorIORequestBuilderFactory"/>
   </util:list>
-  
+
   <bean class="org.dei.perla.rest.controller.PerLaController" scope="singleton" destroy-method="shutdown">
     <constructor-arg name="packages" ref="packages"/>
     <constructor-arg name="mapperFcts" ref="mapperFcts"/>
     <constructor-arg name="channelFcts" ref="channelFcts"/>
     <constructor-arg name="requestBuilderFcts" ref="requestBuilderFcts"/>
   </bean>
-  
+
   <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
     <property name="prefix">
       <value>/WEB-INF/views/</value>
@@ -60,10 +60,10 @@
       <value>.jsp</value>
     </property>
   </bean>
-  
+
   <websocket:message-broker application-destination-prefix="app">
     <websocket:stomp-endpoint path="/query"/>
     <websocket:simple-broker prefix="/output/"/>
   </websocket:message-broker>
-  
+
 </beans>
