@@ -34,14 +34,14 @@
 	<operations>
 		<periodic id="all-periodic">
 			<start>
-				<i:create variable="period" type="sampling-period"/>
+				<i:var name="period" type="sampling-period"/>
 				<i:set variable="period" field="period" value="${param['period']}"/>
 				<i:submit request="temperature-request" channel="simulator">
 					<i:param name="period" variable="period"/>
 				</i:submit>
 			</start>
 			<stop>
-				<i:create variable="period" type="sampling-period"/>
+				<i:var name="period" type="sampling-period"/>
 				<i:set variable="period" field="period" value="0"/>
 				<i:submit request="temperature-request" channel="simulator">
 					<i:param name="period" variable="period"/>

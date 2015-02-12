@@ -140,7 +140,7 @@ public class RestV1 {
 
 	public Collection<Attribute> parseAttributes(Map<String, String[]> query)
 			throws PerLaException {
-		List<Attribute> atts = new ArrayList<Attribute>();
+		List<Attribute> atts = new ArrayList<>();
 		for (Map.Entry<String, String[]> e : query.entrySet()) {
 			String n = e.getKey();
 			if (e.getValue().length == 0) {
@@ -148,7 +148,7 @@ public class RestV1 {
 						+ n + "'");
 			}
 			DataType t = parseDataType(e.getValue()[0]);
-			atts.add(new Attribute(n, t));
+			atts.add(Attribute.create(n, t));
 		}
 		return atts;
 	}

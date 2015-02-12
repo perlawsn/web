@@ -67,7 +67,7 @@ public class TestPerLaController {
         assertThat(retrieved.getId(), equalTo(fpc.getId()));
 
         Collection<Attribute> atts = new ArrayList<>();
-        atts.add(new Attribute("temp_c", DataType.FLOAT));
+        atts.add(Attribute.create("temp_c", DataType.FLOAT));
         assertThat(ctrl.getAllTasks().size(), equalTo(0));
 
         RestTask t = ctrl.queryPeriodic(atts, 1000);
