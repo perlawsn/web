@@ -7,7 +7,7 @@ import org.dei.perla.core.channel.http.HttpIORequestBuilderFactory;
 import org.dei.perla.core.channel.simulator.SimulatorChannelFactory;
 import org.dei.perla.core.channel.simulator.SimulatorIORequestBuilderFactory;
 import org.dei.perla.core.channel.simulator.SimulatorMapperFactory;
-import org.dei.perla.core.fpc.Attribute;
+import org.dei.perla.core.engine.Attribute;
 import org.dei.perla.core.fpc.Fpc;
 import org.dei.perla.core.descriptor.DataType;
 import org.dei.perla.core.message.MapperFactory;
