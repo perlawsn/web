@@ -4,7 +4,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.dei.perla.core.channel.ChannelFactory;
 import org.dei.perla.core.channel.IORequestBuilderFactory;
-import org.dei.perla.core.engine.Attribute;
+import org.dei.perla.core.record.Attribute;
 import org.dei.perla.core.fpc.*;
 import org.dei.perla.core.fpc.base.BaseFpcFactory;
 import org.dei.perla.core.descriptor.*;

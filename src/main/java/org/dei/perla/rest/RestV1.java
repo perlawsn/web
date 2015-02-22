@@ -10,7 +10,7 @@ import java.util.Map;
 
 import javax.annotation.Resource;
 
-import org.dei.perla.core.engine.Attribute;
+import org.dei.perla.core.record.Attribute;
 import org.dei.perla.core.fpc.Fpc;
 import org.dei.perla.core.descriptor.DataType;
 import org.dei.perla.rest.controller.PerLaController;
