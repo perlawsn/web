@@ -44,9 +44,9 @@ public class StompHandler implements TaskHandler {
 
 	private Map<String, String> convert(Record r) {
 		Map<String, String> m = new HashMap<>();
-		r.getAttributes().forEach((a) -> {
+		r.fields().forEach((a) -> {
             String id = a.getId();
-			m.put(id, r.get(id).toString());
+			m.put(id, r.getValue(id).toString());
 		});
 		return m;
 	}
