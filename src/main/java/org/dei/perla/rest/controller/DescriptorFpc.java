@@ -1,5 +1,6 @@
 package org.dei.perla.rest.controller;
 
+import org.dei.perla.core.fpc.Period;
 import org.dei.perla.core.record.Attribute;
 import org.dei.perla.core.fpc.Fpc;
 import org.dei.perla.core.fpc.Task;
@@ -45,6 +46,12 @@ public class DescriptorFpc implements Fpc {
     @Override
     public Task get(Collection<Attribute> attributes, TaskHandler handler) {
         return fpc.get(attributes, handler);
+    }
+
+    @Override
+    public Task get(Collection<Attribute> attributes, Period period,
+            TaskHandler handler) {
+        return fpc.get(attributes, period, handler);
     }
 
     @Override
