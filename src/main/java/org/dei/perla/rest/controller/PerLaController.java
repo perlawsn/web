@@ -160,7 +160,7 @@ public class PerLaController {
      * @throws PerLaException If the query could not be started, or if no {@link
      *                        FPC} possesses the required attributes.
      */
-    public RestTask queryPeriodic(Collection<Attribute> atts, long periodMs)
+    public RestTask queryPeriodic(List<Attribute> atts, long periodMs)
             throws PerLaException {
         l.writeLock().lock();
         try {

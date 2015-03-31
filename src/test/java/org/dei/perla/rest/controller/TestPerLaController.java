@@ -7,17 +7,16 @@ import org.dei.perla.core.channel.http.HttpIORequestBuilderFactory;
 import org.dei.perla.core.channel.simulator.SimulatorChannelFactory;
 import org.dei.perla.core.channel.simulator.SimulatorIORequestBuilderFactory;
 import org.dei.perla.core.channel.simulator.SimulatorMapperFactory;
-import org.dei.perla.core.record.Attribute;
-import org.dei.perla.core.fpc.Fpc;
 import org.dei.perla.core.descriptor.DataType;
+import org.dei.perla.core.fpc.Fpc;
 import org.dei.perla.core.message.MapperFactory;
 import org.dei.perla.core.message.json.JsonMapperFactory;
+import org.dei.perla.core.record.Attribute;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.io.FileInputStream;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
 
 import static org.hamcrest.Matchers.equalTo;
@@ -66,7 +65,7 @@ public class TestPerLaController {
         assertThat(retrieved, notNullValue());
         assertThat(retrieved.getId(), equalTo(fpc.getId()));
 
-        Collection<Attribute> atts = new ArrayList<>();
+        List<Attribute> atts = new ArrayList<>();
         atts.add(Attribute.create("temp_c", DataType.FLOAT));
         assertThat(ctrl.getAllTasks().size(), equalTo(0));
 

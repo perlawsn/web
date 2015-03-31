@@ -1,29 +1,20 @@
 package org.dei.perla.rest;
 
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
-import javax.annotation.Resource;
-
-import org.dei.perla.core.record.Attribute;
-import org.dei.perla.core.fpc.Fpc;
 import org.dei.perla.core.descriptor.DataType;
+import org.dei.perla.core.fpc.Fpc;
+import org.dei.perla.core.record.Attribute;
 import org.dei.perla.rest.controller.PerLaController;
 import org.dei.perla.rest.controller.PerLaException;
 import org.dei.perla.rest.controller.RestTask;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
+
+import javax.annotation.Resource;
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+import java.util.*;
 
 @RestController
 @RequestMapping("/rest/v1")
@@ -56,7 +47,7 @@ public class RestV1 {
 		}
 		params.remove("period");
 
-		Collection<Attribute> atts = null;
+		List<Attribute> atts = null;
 		try {
 			atts = parseAttributes(params);
 		} catch (PerLaException e) {
@@ -138,7 +129,7 @@ public class RestV1 {
 		return new ResponseEntity<>(fpc, HttpStatus.OK);
 	}
 
-	public Collection<Attribute> parseAttributes(Map<String, String[]> query)
+	public List<Attribute> parseAttributes(Map<String, String[]> query)
 			throws PerLaException {
 		List<Attribute> atts = new ArrayList<>();
 		for (Map.Entry<String, String[]> e : query.entrySet()) {
