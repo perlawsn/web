@@ -39,24 +39,27 @@ public class DescriptorFpc implements Fpc {
     }
 
     @Override
-    public Task set(Map<Attribute, Object> valueMap, TaskHandler handler) {
-        return fpc.set(valueMap, handler);
-    }
-
-    @Override
-    public Task get(List<Attribute> attributes, TaskHandler handler) {
-        return fpc.get(attributes, handler);
-    }
-
-    @Override
-    public Task get(List<Attribute> attributes, long periodMs,
+    public Task set(Map<Attribute, Object> valueMap, boolean strict,
             TaskHandler handler) {
-        return fpc.get(attributes, periodMs, handler);
+        return fpc.set(valueMap, strict, handler);
     }
 
     @Override
-    public Task async(List<Attribute> attributes, TaskHandler handler) {
-        return fpc.get(attributes, handler);
+    public Task get(List<Attribute> attributes, boolean strict,
+            TaskHandler handler) {
+        return fpc.get(attributes, strict, handler);
+    }
+
+    @Override
+    public Task get(List<Attribute> attributes, boolean strict, long periodMs,
+            TaskHandler handler) {
+        return fpc.get(attributes, strict, periodMs, handler);
+    }
+
+    @Override
+    public Task async(List<Attribute> attributes, boolean strict,
+            TaskHandler handler) {
+        return fpc.get(attributes, strict, handler);
     }
 
     @Override
