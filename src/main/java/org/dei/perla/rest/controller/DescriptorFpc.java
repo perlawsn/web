@@ -4,11 +4,11 @@ import org.dei.perla.core.fpc.Fpc;
 import org.dei.perla.core.fpc.Task;
 import org.dei.perla.core.fpc.TaskHandler;
 import org.dei.perla.core.record.Attribute;
-import org.dei.perla.core.utils.StopHandler;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.function.Consumer;
 
 /**
  * @author Guido Rota 11/10/14.
@@ -63,7 +63,7 @@ public class DescriptorFpc implements Fpc {
     }
 
     @Override
-    public void stop(StopHandler<Fpc> handler) {
+    public void stop(Consumer<Fpc> handler) {
         fpc.stop(handler);
     }
 
