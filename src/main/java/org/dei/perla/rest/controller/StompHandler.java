@@ -6,7 +6,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.dei.perla.core.fpc.Task;
 import org.dei.perla.core.fpc.TaskHandler;
-import org.dei.perla.core.record.Record;
+import org.dei.perla.core.sample.Sample;
 import org.springframework.messaging.core.MessageSendingOperations;
 
 public class StompHandler implements TaskHandler {
@@ -29,9 +29,9 @@ public class StompHandler implements TaskHandler {
 	}
 
 	@Override
-	public synchronized void newRecord(Task task, Record record) {
+	public synchronized void data(Task task, Sample sample) {
 		try {
-			msg.convertAndSend(dest, convert(record));
+			msg.convertAndSend(dest, convert(sample));
 		} catch (Exception e) {
 			System.out.println(e);
 		}
@@ -42,7 +42,7 @@ public class StompHandler implements TaskHandler {
 		log.error("Error in query '" + id + "'", cause);
 	}
 
-	private Map<String, String> convert(Record r) {
+	private Map<String, String> convert(Sample r) {
 		Map<String, String> m = new HashMap<>();
 		r.fields().forEach((a) -> {
             String id = a.getId();

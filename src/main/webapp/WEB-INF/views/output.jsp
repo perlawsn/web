@@ -56,11 +56,11 @@
             $('#table').table('refresh');
         }
 
-        function addRow(record) {
+        function addRow(sample) {
             // Update table
             var row = '<tr>';
             $.each(query.attributes, function(i, a) {
-                row += '<td>' + record[a.id] + '</td>';
+                row += '<td>' + sample[a.id] + '</td>';
             });
             row += '</tr>';
             $('#table').prepend(row);
@@ -69,10 +69,10 @@
             if (chart === null) {
                 return; // Skip update if chart wasn't created
             }
-            var i = chart.colMap[record['id']];
-            chart.row[i] = parseFloat(record[chart.att.id]);
+            var i = chart.colMap[sample['id']];
+            chart.row[i] = parseFloat(sample[chart.att.id]);
             row = chart.row.slice();
-            row[0] = moment(record['timestamp'].substring(0, 29)).toDate();
+            row[0] = moment(sample['timestamp'].substring(0, 29)).toDate();
             chart.data.addRows([
                 row
             ]);

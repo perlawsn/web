@@ -2,7 +2,7 @@ package org.dei.perla.rest;
 
 import org.dei.perla.core.descriptor.DataType;
 import org.dei.perla.core.fpc.Fpc;
-import org.dei.perla.core.record.Attribute;
+import org.dei.perla.core.sample.Attribute;
 import org.dei.perla.rest.controller.PerLaController;
 import org.dei.perla.rest.controller.PerLaException;
 import org.dei.perla.rest.controller.RestTask;

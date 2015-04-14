@@ -11,7 +11,7 @@ import org.dei.perla.core.descriptor.DataType;
 import org.dei.perla.core.fpc.Fpc;
 import org.dei.perla.core.message.MapperFactory;
 import org.dei.perla.core.message.json.JsonMapperFactory;
-import org.dei.perla.core.record.Attribute;
+import org.dei.perla.core.sample.Attribute;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
