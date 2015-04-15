@@ -11,6 +11,8 @@ import org.dei.perla.core.descriptor.DataType;
 import org.dei.perla.core.fpc.Fpc;
 import org.dei.perla.core.message.MapperFactory;
 import org.dei.perla.core.message.json.JsonMapperFactory;
+import org.dei.perla.core.registry.DataTemplate;
+import org.dei.perla.core.registry.TypeClass;
 import org.dei.perla.core.sample.Attribute;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -65,14 +67,15 @@ public class TestPerLaController {
         assertThat(retrieved, notNullValue());
         assertThat(retrieved.getId(), equalTo(fpc.getId()));
 
-        List<Attribute> atts = new ArrayList<>();
-        atts.add(Attribute.create("temp_c", DataType.FLOAT));
+        List<DataTemplate> data = new ArrayList<>();
+        data.add(DataTemplate.create("temp_c", TypeClass.FLOAT));
         assertThat(ctrl.getAllTasks().size(), equalTo(0));
 
-        RestTask t = ctrl.queryPeriodic(atts, 1000);
+        RestTask t = ctrl.queryPeriodic(data, 1000);
         assertThat(ctrl.getAllTasks().size(), equalTo(1));
         assertThat(t.getPeriod(), equalTo(1000L));
-        assertTrue(t.getAttributes().containsAll(atts));
+        Attribute a = Attribute.create("temp_c", DataType.FLOAT);
+        assertTrue(t.getAttributes().contains(a));
 
         ctrl.stopTask(t.getId());
         assertThat(ctrl.getAllTasks().size(), equalTo(0));

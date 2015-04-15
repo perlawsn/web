@@ -1,8 +1,8 @@
 package org.dei.perla.rest;
 
-import org.dei.perla.core.descriptor.DataType;
 import org.dei.perla.core.fpc.Fpc;
-import org.dei.perla.core.sample.Attribute;
+import org.dei.perla.core.registry.DataTemplate;
+import org.dei.perla.core.registry.TypeClass;
 import org.dei.perla.rest.controller.PerLaController;
 import org.dei.perla.rest.controller.PerLaException;
 import org.dei.perla.rest.controller.RestTask;
@@ -47,15 +47,15 @@ public class RestV1 {
 		}
 		params.remove("period");
 
-		List<Attribute> atts = null;
+		List<DataTemplate> request = null;
 		try {
-			atts = parseAttributes(params);
+			request = parseAttributes(params);
 		} catch (PerLaException e) {
 			return new ResponseEntity<>(new Result(e), HttpStatus.BAD_REQUEST);
 		}
 
 		try {
-			RestTask t = ctrl.queryPeriodic(atts, period);
+			RestTask t = ctrl.queryPeriodic(request, period);
             return new ResponseEntity<>(t, HttpStatus.ACCEPTED);
 		} catch (PerLaException e) {
 			return new ResponseEntity<>(new Result(e), HttpStatus.BAD_REQUEST);
@@ -110,13 +110,14 @@ public class RestV1 {
 			return new ResponseEntity<>(ctrl.getAllFpcs(), HttpStatus.OK);
 		}
 
-		Collection<Attribute> atts = null;
+		Collection<DataTemplate> request = null;
 		try {
-			atts = parseAttributes(params);
+			request = parseAttributes(params);
 		} catch (PerLaException e) {
 			return new ResponseEntity<>(new Result(e), HttpStatus.BAD_REQUEST);
 		}
-		return new ResponseEntity<>(ctrl.getFpcByAttribute(atts), HttpStatus.OK);
+		return new ResponseEntity<>(ctrl.getFpcByAttribute(request),
+				HttpStatus.OK);
 	}
 
 	@RequestMapping(value = "/fpc/{id}", method = RequestMethod.GET)
@@ -129,24 +130,24 @@ public class RestV1 {
 		return new ResponseEntity<>(fpc, HttpStatus.OK);
 	}
 
-	public List<Attribute> parseAttributes(Map<String, String[]> query)
+	public List<DataTemplate> parseAttributes(Map<String, String[]> query)
 			throws PerLaException {
-		List<Attribute> atts = new ArrayList<>();
+		List<DataTemplate> req = new ArrayList<>();
 		for (Map.Entry<String, String[]> e : query.entrySet()) {
 			String n = e.getKey();
 			if (e.getValue().length == 0) {
 				throw new PerLaException("missing data type for attribute '"
 						+ n + "'");
 			}
-			DataType t = parseDataType(e.getValue()[0]);
-			atts.add(Attribute.create(n, t));
+			TypeClass t = parseDataType(e.getValue()[0]);
+			req.add(DataTemplate.create(n, t));
 		}
-		return atts;
+		return req;
 	}
 
-	public DataType parseDataType(String type) throws PerLaException {
+	public TypeClass parseDataType(String type) throws PerLaException {
 		try {
-			return DataType.valueOf(type.toUpperCase());
+			return TypeClass.valueOf(type.toUpperCase());
 		} catch (IllegalArgumentException exc) {
 			throw new PerLaException("'" + type
 					+ "' is not a valid PerLa data type");

@@ -4,14 +4,18 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.dei.perla.core.channel.ChannelFactory;
 import org.dei.perla.core.channel.IORequestBuilderFactory;
-import org.dei.perla.core.sample.Attribute;
-import org.dei.perla.core.fpc.*;
-import org.dei.perla.core.fpc.base.BaseFpcFactory;
 import org.dei.perla.core.descriptor.*;
 import org.dei.perla.core.engine.Executor;
+import org.dei.perla.core.fpc.Fpc;
+import org.dei.perla.core.fpc.FpcFactory;
+import org.dei.perla.core.fpc.Task;
+import org.dei.perla.core.fpc.TaskHandler;
+import org.dei.perla.core.fpc.base.BaseFpcFactory;
+import org.dei.perla.core.message.MapperFactory;
+import org.dei.perla.core.registry.DataTemplate;
 import org.dei.perla.core.registry.Registry;
 import org.dei.perla.core.registry.TreeRegistry;
-import org.dei.perla.core.message.MapperFactory;
+import org.dei.perla.core.sample.Attribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.core.MessageSendingOperations;
 
@@ -139,10 +143,10 @@ public class PerLaController {
     /**
      * Returns a collection of {@code Fpc}s that possess the desired attributes
      *
-     * @param with List of attributes
+     * @param with List of requested data elements
      * @return
      */
-    public Collection<Fpc> getFpcByAttribute(Collection<Attribute> with) {
+    public Collection<Fpc> getFpcByAttribute(Collection<DataTemplate> with) {
         l.readLock().lock();
         try {
             return registry.getByAttribute(with, Collections.emptyList());
@@ -154,17 +158,17 @@ public class PerLaController {
     /**
      * Starts a new query
      *
-     * @param atts     Attributes to query
+     * @param request data to be sampled
      * @param periodMs Query period
      * @return {@link Task} object for controlling query execution
      * @throws PerLaException If the query could not be started, or if no {@link
      *                        FPC} possesses the required attributes.
      */
-    public RestTask queryPeriodic(List<Attribute> atts, long periodMs)
+    public RestTask queryPeriodic(List<DataTemplate> request, long periodMs)
             throws PerLaException {
         l.writeLock().lock();
         try {
-            Collection<Fpc> fpcs = registry.getByAttribute(atts,
+            Collection<Fpc> fpcs = registry.getByAttribute(request,
                     Collections.emptyList());
 
             if (fpcs.size() == 0) {
@@ -176,6 +180,7 @@ public class PerLaController {
             TaskHandler h = new StompHandler(msg, id);
             Collection<Integer> fpcIds = new ArrayList<>();
             Collection<Task> tasks = new ArrayList<>();
+            List<Attribute> atts = toAttributeList(request);
             for (Fpc f : fpcs) {
                 Task t = f.get(atts, periodMs, h);
                 if (t == null) {
@@ -196,6 +201,46 @@ public class PerLaController {
         } finally {
             l.writeLock().unlock();
         }
+    }
+
+    private List<Attribute> toAttributeList(List<DataTemplate> ts) {
+        List<Attribute> as = new ArrayList<>();
+        for (DataTemplate t : ts) {
+            Attribute a = toAttribute(t);
+            if (a == null) {
+                continue;
+            }
+            as.add(a);
+        }
+        return as;
+    }
+
+    private Attribute toAttribute(DataTemplate t) {
+        DataType type = null;
+        switch (t.getTypeClass()) {
+            case ID:
+                type = DataType.ID;
+                break;
+            case TIMESTAMP:
+                type = DataType.TIMESTAMP;
+                break;
+            case INTEGER:
+                type = DataType.INTEGER;
+                break;
+            case FLOAT:
+                type = DataType.FLOAT;
+                break;
+            case STRING:
+                type = DataType.STRING;
+                break;
+            case BOOLEAN:
+                type = DataType.BOOLEAN;
+                break;
+            default:
+                return null;
+        }
+
+        return Attribute.create(t.getId(), type);
     }
 
     /**
