@@ -149,7 +149,7 @@ public class PerLaController {
     public Collection<Fpc> getFpcByAttribute(Collection<DataTemplate> with) {
         l.readLock().lock();
         try {
-            return registry.getByAttribute(with, Collections.emptyList());
+            return registry.get(with, Collections.emptyList());
         } finally {
             l.readLock().unlock();
         }
@@ -168,7 +168,7 @@ public class PerLaController {
             throws PerLaException {
         l.writeLock().lock();
         try {
-            Collection<Fpc> fpcs = registry.getByAttribute(request,
+            Collection<Fpc> fpcs = registry.get(request,
                     Collections.emptyList());
 
             if (fpcs.size() == 0) {
