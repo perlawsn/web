@@ -22,34 +22,15 @@
   <mvc:annotation-driven/>
   <mvc:resources mapping="/console/static/**" location="/static/" />
 
-  <util:list id="packages">
-    <value>org.dei.perla.core.descriptor</value>
-    <value>org.dei.perla.core.descriptor.instructions</value>
-    <value>org.dei.perla.core.channel.http</value>
-    <value>org.dei.perla.core.message.json</value>
-    <value>org.dei.perla.core.channel.simulator</value>
-  </util:list>
-
-  <util:list id="mapperFcts" value-type="org.dei.perla.core.message.MapperFactory">
+  <util:list id="plugins" value-type="org.dei.perla.core.Plugin">
     <bean class="org.dei.perla.core.message.json.JsonMapperFactory"/>
     <bean class="org.dei.perla.core.channel.simulator.SimulatorMapperFactory"/>
-  </util:list>
-
-  <util:list id="channelFcts" value-type="org.dei.perla.core.channel.ChannelFactory">
-  	<bean class="org.dei.perla.core.channel.http.HttpChannelFactory"/>
-  	<bean class="org.dei.perla.core.channel.simulator.SimulatorChannelFactory"/>
-  </util:list>
-
-  <util:list id="requestBuilderFcts" value-type="org.dei.perla.core.channel.IORequestBuilderFactory">
-  	<bean class="org.dei.perla.core.channel.http.HttpIORequestBuilderFactory"/>
-  	<bean class="org.dei.perla.core.channel.simulator.SimulatorIORequestBuilderFactory"/>
+    <bean class="org.dei.perla.core.channel.http.HttpChannelPlugin"/>
+    <bean class="org.dei.perla.core.channel.simulator.SimulatorChannelPlugin"/>
   </util:list>
 
   <bean class="org.dei.perla.rest.controller.PerLaController" scope="singleton" destroy-method="shutdown">
-    <constructor-arg name="packages" ref="packages"/>
-    <constructor-arg name="mapperFcts" ref="mapperFcts"/>
-    <constructor-arg name="channelFcts" ref="channelFcts"/>
-    <constructor-arg name="requestBuilderFcts" ref="requestBuilderFcts"/>
+    <constructor-arg name="plugins" ref="plugins"/>
   </bean>
 
   <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">

@@ -2,6 +2,8 @@ package org.dei.perla.rest.controller;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.dei.perla.core.PerLaSystem;
+import org.dei.perla.core.Plugin;
 import org.dei.perla.core.channel.ChannelFactory;
 import org.dei.perla.core.channel.IORequestBuilderFactory;
 import org.dei.perla.core.descriptor.*;
@@ -38,24 +40,18 @@ public class PerLaController {
     private MessageSendingOperations<String> msg;
 
     // Id generators
-    private int nodeIdCount = 0;
     private int taskIdCount = 0;
 
-    private ReadWriteLock l = new ReentrantReadWriteLock();
+    private final ReadWriteLock l = new ReentrantReadWriteLock();
 
-    private DeviceDescriptorParser parser;
-    private FpcFactory factory;
-    private Registry registry = new TreeRegistry();
+    private final PerLaSystem system;
+    private final Registry registry;
 
-    private Map<Integer, RestTask> taskMap = new ConcurrentHashMap<>();
+    private final Map<Integer, RestTask> taskMap = new ConcurrentHashMap<>();
 
-    public PerLaController(List<String> packages,
-            List<MapperFactory> mapperFcts, List<ChannelFactory> channelFcts,
-            List<IORequestBuilderFactory> requestBuilderFcts)
-            throws PerLaException {
-        parser = new JaxbDeviceDescriptorParser(packages);
-        factory = new BaseFpcFactory(mapperFcts, channelFcts,
-                requestBuilderFcts);
+    public PerLaController(List<Plugin> plugins) throws PerLaException {
+        system = new PerLaSystem(plugins);
+        registry = system.getRegistry();
         logger.info("PerLaController initialized successfully");
     }
 
@@ -71,7 +67,6 @@ public class PerLaController {
         l.writeLock().lock();
         try {
             Fpc fpc = null;
-            int id = nodeIdCount++;
 
             try {
                 StringWriter w = new StringWriter();
@@ -79,18 +74,14 @@ public class PerLaController {
                 String xml = w.toString();
                 ByteArrayInputStream bis = new ByteArrayInputStream(xml
                         .getBytes(StandardCharsets.UTF_8));
-                DeviceDescriptor d = parser.parse(bis);
-                fpc = factory.createFpc(d, id);
-                registry.add(new DescriptorFpc(fpc, xml));
+                system.injectDescriptor(bis);
             } catch (IOException e) {
                 failAndThrow("Error reading the Device Descriptor", e);
-            } catch (DeviceDescriptorParseException e) {
+            } catch (DeviceDescriptorException e) {
                 failAndThrow("Error parsing device descriptor", e);
-            } catch (InvalidDeviceDescriptorException e) {
-                failAndThrow("Error creating FPC", e);
             }
 
-            logger.debug("FPC '" + id + "' created and added to the register");
+            logger.debug("FPC created and added to the register");
             return fpc;
         } finally {
             l.writeLock().unlock();
