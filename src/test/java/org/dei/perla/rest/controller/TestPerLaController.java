@@ -1,15 +1,11 @@
 package org.dei.perla.rest.controller;
 
-import org.dei.perla.core.channel.ChannelFactory;
-import org.dei.perla.core.channel.IORequestBuilderFactory;
-import org.dei.perla.core.channel.http.HttpChannelFactory;
-import org.dei.perla.core.channel.http.HttpIORequestBuilderFactory;
-import org.dei.perla.core.channel.simulator.SimulatorChannelFactory;
-import org.dei.perla.core.channel.simulator.SimulatorIORequestBuilderFactory;
+import org.dei.perla.core.Plugin;
+import org.dei.perla.core.channel.http.HttpChannelPlugin;
+import org.dei.perla.core.channel.simulator.SimulatorChannelPlugin;
 import org.dei.perla.core.channel.simulator.SimulatorMapperFactory;
 import org.dei.perla.core.descriptor.DataType;
 import org.dei.perla.core.fpc.Fpc;
-import org.dei.perla.core.message.MapperFactory;
 import org.dei.perla.core.message.json.JsonMapperFactory;
 import org.dei.perla.core.registry.DataTemplate;
 import org.dei.perla.core.registry.TypeClass;
@@ -35,26 +31,13 @@ public class TestPerLaController {
 
     @BeforeClass
     public static void setup() throws PerLaException {
-        List<String> pkgs = new ArrayList<>();
-        pkgs.add("org.dei.perla.core.descriptor");
-        pkgs.add("org.dei.perla.core.descriptor.instructions");
-        pkgs.add("org.dei.perla.core.channel.http");
-        pkgs.add("org.dei.perla.core.message.json");
-        pkgs.add("org.dei.perla.core.channel.simulator");
+        List<Plugin> plugins = new ArrayList<>();
+        plugins.add(new JsonMapperFactory());
+        plugins.add(new SimulatorMapperFactory());
+        plugins.add(new HttpChannelPlugin());
+        plugins.add(new SimulatorChannelPlugin());
 
-        List<MapperFactory> mpFcts = new ArrayList<>();
-        mpFcts.add(new SimulatorMapperFactory());
-        mpFcts.add(new JsonMapperFactory());
-
-        List<ChannelFactory> chFcts = new ArrayList<>();
-        chFcts.add(new SimulatorChannelFactory());
-        chFcts.add(new HttpChannelFactory());
-
-        List<IORequestBuilderFactory> reqBldrFcts = new ArrayList<>();
-        reqBldrFcts.add(new SimulatorIORequestBuilderFactory());
-        reqBldrFcts.add(new HttpIORequestBuilderFactory());
-
-        ctrl = new PerLaController(pkgs, mpFcts, chFcts, reqBldrFcts);
+        ctrl = new PerLaController(plugins);
     }
 
     @Test

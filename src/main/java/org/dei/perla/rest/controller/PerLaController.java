@@ -2,6 +2,7 @@ package org.dei.perla.rest.controller;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
+import org.dei.perla.core.DeviceConnectionException;
 import org.dei.perla.core.PerLaSystem;
 import org.dei.perla.core.Plugin;
 import org.dei.perla.core.channel.ChannelFactory;
@@ -77,8 +78,8 @@ public class PerLaController {
                 system.injectDescriptor(bis);
             } catch (IOException e) {
                 failAndThrow("Error reading the Device Descriptor", e);
-            } catch (DeviceDescriptorException e) {
-                failAndThrow("Error parsing device descriptor", e);
+            } catch (DeviceConnectionException e) {
+                failAndThrow("Error while adding new device", e);
             }
 
             logger.debug("FPC created and added to the register");
