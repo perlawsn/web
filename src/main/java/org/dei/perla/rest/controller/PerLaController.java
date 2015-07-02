@@ -2,12 +2,12 @@ package org.dei.perla.rest.controller;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
-import org.dei.perla.core.DeviceConnectionException;
 import org.dei.perla.core.PerLaSystem;
 import org.dei.perla.core.Plugin;
 import org.dei.perla.core.descriptor.DataType;
 import org.dei.perla.core.engine.Executor;
 import org.dei.perla.core.fpc.Fpc;
+import org.dei.perla.core.fpc.FpcCreationException;
 import org.dei.perla.core.fpc.Task;
 import org.dei.perla.core.fpc.TaskHandler;
 import org.dei.perla.core.registry.DataTemplate;
@@ -72,7 +72,7 @@ public class PerLaController {
                 system.injectDescriptor(bis);
             } catch (IOException e) {
                 failAndThrow("Error reading the Device Descriptor", e);
-            } catch (DeviceConnectionException e) {
+            } catch (FpcCreationException e) {
                 failAndThrow("Error while adding new device", e);
             }
 
