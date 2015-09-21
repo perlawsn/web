@@ -178,9 +178,8 @@
 
     </div>
 
-    <div data-role="footer">
-        <h4>PerLa 2014</h4>
-    </div>
+    <%@include file="include/common_footer.jsp" %>
+
 </div>
 </body>
 </html>

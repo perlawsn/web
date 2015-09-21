@@ -4,8 +4,15 @@
 <link rel="stylesheet" href="/perla-web/console/static/style.css"/>
 <script src="/perla-web/console/static/jquery-1.11.1.min.js"></script>
 <script type="text/javascript">
-$(document).bind("mobileinit", function () {
-    $.mobile.ajaxEnabled = false;
-});
+
+    $(document).bind('mobileinit', function () {
+        $.mobile.ajaxEnabled = false;
+    });
+
+    $(document).on('pagecreate', function () {
+        var year = new Date().getFullYear();
+        $('#footer_year').append(year);
+    });
+
 </script>
 <script src="/perla-web/console/static/jquery.mobile-1.4.4.min.js"></script>
