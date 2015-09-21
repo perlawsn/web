@@ -42,11 +42,12 @@ public class StompHandler implements TaskHandler {
         log.error("Error in query '" + id + "'", cause);
     }
 
-    private Map<String, String> convert(Sample r) {
+    private Map<String, String> convert(Sample s) {
         Map<String, String> m = new HashMap<>();
-        r.fields().forEach((a) -> {
+        s.fields().forEach((a) -> {
             String id = a.getId();
-            m.put(id, r.getValue(id).toString());
+            Object value = s.getValue(id);
+            m.put(id, value.toString());
         });
         return m;
     }

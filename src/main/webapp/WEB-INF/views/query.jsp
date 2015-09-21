@@ -55,14 +55,14 @@ function display(queries) {
         item += '<p class="wrap">';
         item += '<strong>Attributes:</strong> ';
         $.each(q.attributes, function(i, a) {
-            item += a.id + ' (' + a.type + ')';
+            item += a.id + ' (' + a.type.id + ')';
             if (i != q.attributes.length - 1) {
                 item += ', ';
             }
         });
         item += '</p>';
         item += '<p class="wrap">';
-        item += '<strong>FPCs:</strong> ';
+        item += '<strong>FPC ids:</strong> ';
         $.each(q.fpcs, function(i, f) {
             item += f;
             if (i != q.fpcs.length - 1) {
@@ -88,7 +88,7 @@ function stopQuery(id) {
         dataType: 'json',
         type: 'delete',
         async: true,
-        success: function(result) {
+        success: function() {
             location.reload();
         },
         error: function(resp) {
