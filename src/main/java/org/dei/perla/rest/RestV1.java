@@ -1,8 +1,9 @@
 package org.dei.perla.rest;
 
+import org.dei.perla.core.fpc.Attribute;
+import org.dei.perla.core.fpc.DataType;
+import org.dei.perla.core.fpc.DataType.ConcreteType;
 import org.dei.perla.core.fpc.Fpc;
-import org.dei.perla.core.registry.DataTemplate;
-import org.dei.perla.core.registry.TypeClass;
 import org.dei.perla.rest.controller.PerLaController;
 import org.dei.perla.rest.controller.PerLaException;
 import org.dei.perla.rest.controller.RestTask;
@@ -37,7 +38,7 @@ public class RestV1 {
 					HttpStatus.BAD_REQUEST);
 		}
 
-		long period = 0;
+		long period;
 		try {
 			period = Long.parseLong(params.get("period")[0]);
 		} catch (NumberFormatException e) {
@@ -47,7 +48,7 @@ public class RestV1 {
 		}
 		params.remove("period");
 
-		List<DataTemplate> request = null;
+		List<Attribute> request;
 		try {
 			request = parseAttributes(params);
 		} catch (PerLaException e) {
@@ -110,7 +111,7 @@ public class RestV1 {
 			return new ResponseEntity<>(ctrl.getAllFpcs(), HttpStatus.OK);
 		}
 
-		Collection<DataTemplate> request = null;
+		Collection<Attribute> request;
 		try {
 			request = parseAttributes(params);
 		} catch (PerLaException e) {
@@ -130,24 +131,24 @@ public class RestV1 {
 		return new ResponseEntity<>(fpc, HttpStatus.OK);
 	}
 
-	public List<DataTemplate> parseAttributes(Map<String, String[]> query)
+	public List<Attribute> parseAttributes(Map<String, String[]> query)
 			throws PerLaException {
-		List<DataTemplate> req = new ArrayList<>();
+		List<Attribute> req = new ArrayList<>();
 		for (Map.Entry<String, String[]> e : query.entrySet()) {
 			String n = e.getKey();
 			if (e.getValue().length == 0) {
 				throw new PerLaException("missing data type for attribute '"
 						+ n + "'");
 			}
-			TypeClass t = parseDataType(e.getValue()[0]);
-			req.add(DataTemplate.create(n, t));
+			DataType t = parseDataType(e.getValue()[0]);
+			req.add(Attribute.create(n, t));
 		}
 		return req;
 	}
 
-	public TypeClass parseDataType(String type) throws PerLaException {
+	public DataType parseDataType(String type) throws PerLaException {
 		try {
-			return TypeClass.valueOf(type.toUpperCase());
+			return ConcreteType.parse(type);
 		} catch (IllegalArgumentException exc) {
 			throw new PerLaException("'" + type
 					+ "' is not a valid PerLa data type");

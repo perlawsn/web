@@ -4,15 +4,9 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 import org.dei.perla.core.PerLaSystem;
 import org.dei.perla.core.Plugin;
-import org.dei.perla.core.descriptor.DataType;
 import org.dei.perla.core.engine.Executor;
-import org.dei.perla.core.fpc.Fpc;
-import org.dei.perla.core.fpc.FpcCreationException;
-import org.dei.perla.core.fpc.Task;
-import org.dei.perla.core.fpc.TaskHandler;
-import org.dei.perla.core.registry.DataTemplate;
+import org.dei.perla.core.fpc.*;
 import org.dei.perla.core.registry.Registry;
-import org.dei.perla.core.sample.Attribute;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.core.MessageSendingOperations;
 
@@ -69,7 +63,7 @@ public class PerLaController {
                 String xml = w.toString();
                 ByteArrayInputStream bis = new ByteArrayInputStream(xml
                         .getBytes(StandardCharsets.UTF_8));
-                system.injectDescriptor(bis);
+                fpc = system.injectDescriptor(bis);
             } catch (IOException e) {
                 failAndThrow("Error reading the Device Descriptor", e);
             } catch (FpcCreationException e) {
@@ -132,7 +126,7 @@ public class PerLaController {
      * @param with List of requested data elements
      * @return
      */
-    public Collection<Fpc> getFpcByAttribute(Collection<DataTemplate> with) {
+    public Collection<Fpc> getFpcByAttribute(Collection<Attribute> with) {
         l.readLock().lock();
         try {
             return registry.get(with, Collections.emptyList());
@@ -150,7 +144,7 @@ public class PerLaController {
      * @throws PerLaException If the query could not be started, or if no {@link
      *                        FPC} possesses the required attributes.
      */
-    public RestTask queryPeriodic(List<DataTemplate> request, long periodMs)
+    public RestTask queryPeriodic(List<Attribute> request, long periodMs)
             throws PerLaException {
         l.writeLock().lock();
         try {
@@ -166,9 +160,8 @@ public class PerLaController {
             TaskHandler h = new StompHandler(msg, id);
             Collection<Integer> fpcIds = new ArrayList<>();
             Collection<Task> tasks = new ArrayList<>();
-            List<Attribute> atts = toAttributeList(request);
             for (Fpc f : fpcs) {
-                Task t = f.get(atts, periodMs, h);
+                Task t = f.get(request, periodMs, h);
                 if (t == null) {
                     continue;
                 }
@@ -181,52 +174,12 @@ public class PerLaController {
                         "No FPC can satisfy the requested query");
             }
 
-            RestTask t = new RestTask(id, atts, periodMs, fpcIds, tasks);
+            RestTask t = new RestTask(id, request, periodMs, fpcIds, tasks);
             taskMap.put(id, t);
             return t;
         } finally {
             l.writeLock().unlock();
         }
-    }
-
-    private List<Attribute> toAttributeList(List<DataTemplate> ts) {
-        List<Attribute> as = new ArrayList<>();
-        for (DataTemplate t : ts) {
-            Attribute a = toAttribute(t);
-            if (a == null) {
-                continue;
-            }
-            as.add(a);
-        }
-        return as;
-    }
-
-    private Attribute toAttribute(DataTemplate t) {
-        DataType type = null;
-        switch (t.getTypeClass()) {
-            case ID:
-                type = DataType.ID;
-                break;
-            case TIMESTAMP:
-                type = DataType.TIMESTAMP;
-                break;
-            case INTEGER:
-                type = DataType.INTEGER;
-                break;
-            case FLOAT:
-                type = DataType.FLOAT;
-                break;
-            case STRING:
-                type = DataType.STRING;
-                break;
-            case BOOLEAN:
-                type = DataType.BOOLEAN;
-                break;
-            default:
-                return null;
-        }
-
-        return Attribute.create(t.getId(), type);
     }
 
     /**

@@ -1,12 +1,11 @@
 package org.dei.perla.rest.controller;
 
-import java.util.Collection;
-import java.util.concurrent.atomic.AtomicBoolean;
-
-import org.dei.perla.core.sample.Attribute;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import org.dei.perla.core.fpc.Attribute;
 import org.dei.perla.core.fpc.Task;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Collection;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 public class RestTask {
 

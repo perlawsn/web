@@ -1,13 +1,13 @@
 package org.dei.perla.rest.controller;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.log4j.Logger;
+import org.dei.perla.core.fpc.Sample;
 import org.dei.perla.core.fpc.Task;
 import org.dei.perla.core.fpc.TaskHandler;
-import org.dei.perla.core.sample.Sample;
 import org.springframework.messaging.core.MessageSendingOperations;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class StompHandler implements TaskHandler {
 

@@ -4,12 +4,10 @@ import org.dei.perla.core.Plugin;
 import org.dei.perla.core.channel.http.HttpChannelPlugin;
 import org.dei.perla.core.channel.simulator.SimulatorChannelPlugin;
 import org.dei.perla.core.channel.simulator.SimulatorMapperFactory;
-import org.dei.perla.core.descriptor.DataType;
+import org.dei.perla.core.fpc.Attribute;
+import org.dei.perla.core.fpc.DataType;
 import org.dei.perla.core.fpc.Fpc;
 import org.dei.perla.core.message.json.JsonMapperFactory;
-import org.dei.perla.core.registry.DataTemplate;
-import org.dei.perla.core.registry.TypeClass;
-import org.dei.perla.core.sample.Attribute;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
@@ -50,8 +48,8 @@ public class TestPerLaController {
         assertThat(retrieved, notNullValue());
         assertThat(retrieved.getId(), equalTo(fpc.getId()));
 
-        List<DataTemplate> data = new ArrayList<>();
-        data.add(DataTemplate.create("temp_c", TypeClass.FLOAT));
+        List<Attribute> data = new ArrayList<>();
+        data.add(Attribute.create("temp_c", DataType.FLOAT));
         assertThat(ctrl.getAllTasks().size(), equalTo(0));
 
         RestTask t = ctrl.queryPeriodic(data, 1000);
