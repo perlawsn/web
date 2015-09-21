@@ -11,44 +11,44 @@ import java.util.Map;
 
 public class StompHandler implements TaskHandler {
 
-	private final Logger log = Logger.getLogger(StompHandler.class);
+    private final Logger log = Logger.getLogger(StompHandler.class);
 
-	private final MessageSendingOperations<String> msg;
-	private final int id;
-	private final String dest;
+    private final MessageSendingOperations<String> msg;
+    private final int id;
+    private final String dest;
 
-	public StompHandler(MessageSendingOperations<String> msg, int id) {
-		this.msg = msg;
-		this.id = id;
-		this.dest = "/output/" + id;
-	}
+    public StompHandler(MessageSendingOperations<String> msg, int id) {
+        this.msg = msg;
+        this.id = id;
+        this.dest = "/output/" + id;
+    }
 
-	@Override
-	public void complete(Task task) {
-		log.debug("Task in query '" + id + "' completed");
-	}
+    @Override
+    public void complete(Task task) {
+        log.debug("Task in query '" + id + "' completed");
+    }
 
-	@Override
-	public synchronized void data(Task task, Sample sample) {
-		try {
-			msg.convertAndSend(dest, convert(sample));
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-	}
+    @Override
+    public synchronized void data(Task task, Sample sample) {
+        try {
+            msg.convertAndSend(dest, convert(sample));
+        } catch (Exception e) {
+            log.error(e);
+        }
+    }
 
-	@Override
-	public void error(Task task, Throwable cause) {
-		log.error("Error in query '" + id + "'", cause);
-	}
+    @Override
+    public void error(Task task, Throwable cause) {
+        log.error("Error in query '" + id + "'", cause);
+    }
 
-	private Map<String, String> convert(Sample r) {
-		Map<String, String> m = new HashMap<>();
-		r.fields().forEach((a) -> {
+    private Map<String, String> convert(Sample r) {
+        Map<String, String> m = new HashMap<>();
+        r.fields().forEach((a) -> {
             String id = a.getId();
-			m.put(id, r.getValue(id).toString());
-		});
-		return m;
-	}
+            m.put(id, r.getValue(id).toString());
+        });
+        return m;
+    }
 
 }

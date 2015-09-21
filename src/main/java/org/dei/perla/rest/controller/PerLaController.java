@@ -6,6 +6,7 @@ import org.dei.perla.core.PerLaSystem;
 import org.dei.perla.core.Plugin;
 import org.dei.perla.core.engine.Executor;
 import org.dei.perla.core.fpc.*;
+import org.dei.perla.core.registry.DuplicateDeviceIDException;
 import org.dei.perla.core.registry.Registry;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.core.MessageSendingOperations;
@@ -29,7 +30,7 @@ public class PerLaController {
     private MessageSendingOperations<String> msg;
 
     // Id generators
-    private int taskIdCount = 0;
+    private int taskIdSeq = 0;
 
     private final ReadWriteLock l = new ReentrantReadWriteLock();
 
@@ -63,10 +64,14 @@ public class PerLaController {
                 String xml = w.toString();
                 ByteArrayInputStream bis = new ByteArrayInputStream(xml
                         .getBytes(StandardCharsets.UTF_8));
-                fpc = system.injectDescriptor(bis);
+
+                // Create FPC, wrap it, and store a reference in the registry
+                fpc = system.createFpc(bis);
+                fpc = new DescriptorFpc(fpc, xml);
+                registry.add(fpc);
             } catch (IOException e) {
                 failAndThrow("Error reading the Device Descriptor", e);
-            } catch (FpcCreationException e) {
+            } catch (FpcCreationException | DuplicateDeviceIDException e) {
                 failAndThrow("Error while adding new device", e);
             }
 
@@ -156,7 +161,7 @@ public class PerLaController {
                         "Requested attributes are not available on any device");
             }
 
-            int id = taskIdCount++;
+            int id = taskIdSeq++;
             TaskHandler h = new StompHandler(msg, id);
             Collection<Integer> fpcIds = new ArrayList<>();
             Collection<Task> tasks = new ArrayList<>();
