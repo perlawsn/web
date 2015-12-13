@@ -104,7 +104,7 @@
   		    <artifactId>tomcat-embed-websocket</artifactId>
   		    <version>${tomcat.version}</version>
   	      </dependency>
-        </dependencies>
+  	   </dependencies>
       </plugin>
     </plugins>
   </build>
@@ -177,6 +177,23 @@
         <version>2.2</version>
         <scope>provided</scope>
     </dependency>
+    
+    <dependency>
+    	<groupId>org.ow2.joram</groupId>
+    	<artifactId>joram-mom-core</artifactId>
+    	<version>5.10.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.ow2.joram</groupId>
+    	<artifactId>joram-client-jms</artifactId>
+    	<version>5.10.0</version>
+    </dependency>
+    <dependency>
+    	<groupId>org.ow2.joram</groupId>
+    	<artifactId>jndi-client</artifactId>
+    	<version>5.10.0</version>
+    </dependency>
+        
   </dependencies>
   <packaging>war</packaging>
   <version>1.0.0</version>

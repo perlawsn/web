@@ -16,7 +16,7 @@ public class StompHandler implements TaskHandler {
     private final MessageSendingOperations<String> msg;
     private final int id;
     private final String dest;
-
+ 
     public StompHandler(MessageSendingOperations<String> msg, int id) {
         this.msg = msg;
         this.id = id;
@@ -31,8 +31,10 @@ public class StompHandler implements TaskHandler {
     @Override
     public synchronized void data(Task task, Sample sample) {
         try {
+        	System.out.println("Message sent");
             msg.convertAndSend(dest, convert(sample));
         } catch (Exception e) {
+        	
             log.error(e);
         }
     }
