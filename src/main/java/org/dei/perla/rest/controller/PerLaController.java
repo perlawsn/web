@@ -1,6 +1,7 @@
 package org.dei.perla.rest.controller;
 
 import org.apache.commons.io.IOUtils;
+import org.dei.perla.web.aggr.types.*;
 import org.apache.log4j.Logger;
 import org.dei.perla.core.PerLaSystem;
 import org.dei.perla.core.Plugin;
@@ -21,7 +22,7 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
-
+import org.dei.perla.web.sender.*;
 public class PerLaController {
 
     private Logger logger = Logger.getLogger(PerLaController.class);
@@ -76,6 +77,17 @@ public class PerLaController {
             }
 
             logger.debug("FPC created and added to the register");
+            
+            
+            
+            try {
+            	AddFpcMessage message = null;
+				Sender.sendFpcMessage(message);
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+            
             return fpc;
         } finally {
             l.writeLock().unlock();

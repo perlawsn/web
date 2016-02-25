@@ -8,6 +8,8 @@ import org.springframework.messaging.core.MessageSendingOperations;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.dei.perla.web.sender.*;
+import org.dei.perla.web.aggr.types.*;
 
 public class StompHandler implements TaskHandler {
 
@@ -31,8 +33,12 @@ public class StompHandler implements TaskHandler {
     @Override
     public synchronized void data(Task task, Sample sample) {
         try {
-        	System.out.println("Message sent");
+        	
             msg.convertAndSend(dest, convert(sample));
+            DataMessage message=null;
+            Sender.sendDataMessage(message);
+           
+            
         } catch (Exception e) {
         	
             log.error(e);
@@ -50,6 +56,9 @@ public class StompHandler implements TaskHandler {
             String id = a.getId();
             Object value = s.getValue(id);
             m.put(id, value.toString());
+            
+            System.out.println ("Preso: "+id+"valore:" +value.toString());
+            
         });
         return m;
     }
